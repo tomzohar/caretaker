@@ -1,0 +1,9 @@
+{
+  "name": "caretaker-client-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/caretaker-client-e2e/src",
+  "implicitDependencies": ["caretaker-client"],
+  "// targets": "to see all targets run: nx show project caretaker-client-e2e --web",
+  "targets": {}
+}

@@ -1,0 +1,9 @@
+{
+  "name": "caretaker-client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/caretaker-client/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project caretaker-client --web",
+  "targets": {}
+}
