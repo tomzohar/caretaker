@@ -15,8 +15,19 @@
 
 To run the dev server for your app, use:
 
+### Backend
+```sh
+nx serve caretaker-api
+```
+
+### Frontend
 ```sh
 npx nx serve caretaker-client
+```
+
+### Console
+```sh
+nx run caretaker-api:console
 ```
 
 To create a production bundle:

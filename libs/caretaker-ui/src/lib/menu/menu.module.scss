@@ -1,0 +1,17 @@
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 16px;
+}
+
+.menuItemIcon {
+  height: 100%;
+  display: flex;
+  justify-self: center;
+}
+
+.menuItemText {
+  height: 100%;
+
+}

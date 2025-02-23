@@ -1,0 +1,9 @@
+{
+  "name": "caretaker-layout-types",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/caretaker-layout/caretaker-layout-types/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project caretaker-layout-types --web",
+  "targets": {}
+}

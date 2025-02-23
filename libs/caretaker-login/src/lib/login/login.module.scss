@@ -1,0 +1,37 @@
+.loginPage {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  background: url('../../../../../apps/caretaker-client/src/assets/caretaker-login-bg-1.jpg');
+  background-size: cover;
+
+  .loginWrapper {
+    width: 400px;
+    background: #ffffffc4;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+
+      .loginFormItem {
+        margin-top: 16px;
+        background: white;
+        width: 100%;
+      }
+    }
+
+    .loginFormButton {
+      display: flex;
+      width: 100%;
+      margin-top: 16px;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.signupPage {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  background: url('../../../../../../apps/caretaker-client/src/assets/caretaker-login-bg-1.jpg');
+  background-size: cover;
+
+  .signupFormWrapper {
+    //width: 400px;
+    background: #ffffffc4;
+    padding: 24px;
+    text-align: center;
+  }
+}

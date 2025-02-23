@@ -14,7 +14,20 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@caretaker/caretaker-data": ["libs/caretaker-data/src/index.ts"],
+      "@caretaker/caretaker-layout-features": [
+        "libs/caretaker-layout/caretaker-layout-features/src/index.ts"
+      ],
+      "@caretaker/caretaker-layout-types": [
+        "libs/caretaker-layout/caretaker-layout-types/src/index.ts"
+      ],
+      "@caretaker/caretaker-login": ["libs/caretaker-login/src/index.ts"],
+      "@caretaker/caretaker-types": ["libs/caretaker-types/src/index.ts"],
+      "@caretaker/caretaker-ui": ["libs/caretaker-ui/src/index.ts"],
+      "@caretaker/home": ["libs/features/home/src/index.ts"],
+      "@caretaker/patients-page": ["libs/features/patients-page/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

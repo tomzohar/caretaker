@@ -1,13 +1,14 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
+import { Outlet } from 'react-router-dom';
+import { AppLayout } from '@caretaker/caretaker-layout-features';
+import { observer } from 'mobx-react-lite';
+import { UserStore } from '@caretaker/caretaker-data';
 
-export function App() {
+function App({ userStore }: { userStore: UserStore }) {
   return (
-    <div>
-      <NxWelcome title="caretaker-client" />
-    </div>
+    <AppLayout user={userStore}>
+      <Outlet />
+    </AppLayout>
   );
 }
 
-export default App;
+export default observer(App);

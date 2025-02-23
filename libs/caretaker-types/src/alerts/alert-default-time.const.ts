@@ -1,0 +1,1 @@
+export const ALERTS_DEFAULT_TIME = 5000;
