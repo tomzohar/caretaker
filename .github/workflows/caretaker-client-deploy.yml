@@ -18,9 +18,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Install dependencies
-        run: npm ci
+        run: npm install nx & npm ci
       - name: Build application
-        run: npx nx run caretaker-client:build
+        run: nx run caretaker-client:build
       - name: Deploy to S3
         run: aws s3 sync dist/apps/caretaker-client s3://${{ secrets.AWS_CARETAKER_CLIENT_BUCKET_NAME }} --recursive
       - name: Create Cloudfront Invalidation
