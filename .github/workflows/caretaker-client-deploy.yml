@@ -17,8 +17,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Install NX
+        run: npm install nx
       - name: Install dependencies
-        run: npm install nx & npm ci
+        run: npm ci
       - name: Build application
         run: nx run caretaker-client:build
       - name: Deploy to S3
