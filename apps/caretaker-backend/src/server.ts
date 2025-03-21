@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+const pathToEnv = path.resolve(__dirname + '../../../.env');
+dotenv.config({
+  path: pathToEnv,
+});
 
 async function startServer() {
     try {

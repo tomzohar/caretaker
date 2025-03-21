@@ -4,9 +4,10 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "db:up": "cd apps/caretaker-api docker-compose up -d",
-    "db:drop": "cd apps/caretaker-api docker-compose down -v",
-    "console": "ts-node apps/caretaker-api/src/repl-init.ts"
+    "db:fresh": "npm run db:down && npm run db:up",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down -v",
+    "console": "ts-node apps/caretaker-backend/src/repl-init.ts"
   },
   "private": true,
   "dependencies": {

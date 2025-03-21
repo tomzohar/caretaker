@@ -1,34 +1,27 @@
 {
-  "name": "caretaker-api",
+  "name": "caretaker-backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/caretaker-api/src",
+  "sourceRoot": "apps/caretaker-backend/src",
   "projectType": "application",
   "tags": [],
   "targets": {
-    "docker": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npm run db:up"
-      }
-    },
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
-        "outputPath": "dist/apps/caretaker-api",
+        "outputPath": "dist/apps/caretaker-backend",
         "format": ["cjs"],
         "bundle": false,
-        "main": "apps/caretaker-api/src/main.ts",
-        "tsConfig": "apps/caretaker-api/tsconfig.app.json",
-        "assets": ["apps/caretaker-api/src/assets"],
+        "main": "apps/caretaker-backend/src/main.ts",
+        "tsConfig": "apps/caretaker-backend/tsconfig.app.json",
+        "assets": ["apps/caretaker-backend/src/assets"],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,
           "outExtension": {
-            ".js": ".js",
-            ".json": ".json"
+            ".js": ".js"
           }
         }
       },
@@ -47,23 +40,17 @@
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        {
-          "target": "docker",
-          "projects": "self"
-        },
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
-        "buildTarget": "caretaker-api:build",
+        "buildTarget": "caretaker-backend:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "caretaker-api:build:development"
+          "buildTarget": "caretaker-backend:build:development"
         },
         "production": {
-          "buildTarget": "caretaker-api:build:production"
+          "buildTarget": "caretaker-backend:build:production"
         }
       }
     },
@@ -72,16 +59,16 @@
         "passWithNoTests": true
       }
     },
-    "fresh-db": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npm run db:drop"
-      }
-    },
     "console": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npm run console"
+      }
+    },
+    "fresh-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npm run db:drop", "npm run db:up"]
       }
     }
   }
