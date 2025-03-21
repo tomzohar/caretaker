@@ -1,12 +1,11 @@
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { Alert, Snackbar } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { observer } from 'mobx-react-lite';
 import { AppStore } from '@caretaker/caretaker-data';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { ALERTS_DEFAULT_TIME } from '@caretaker/caretaker-types';
 import { Button } from '../button/button';
 import IconButton from '../icon-button/icon-button';
-import { Close as CloseIcon } from '@mui/icons-material';
-import styles from './alert.module.scss';
-import { ALERTS_DEFAULT_TIME } from '@caretaker/caretaker-types';
 
 export interface AlertProps {
   appState: AppStore;
@@ -38,15 +37,13 @@ export const AlertComponent = observer(
       const { action } = alert;
 
       return (
-        <>
-          <Button
+        <Button
             color={action.buttonConfig.color}
             size={action.buttonConfig.size}
             onClick={handleClose}
           >
             {action.text}
           </Button>
-        </>
       );
     };
 

@@ -1,7 +1,6 @@
 import { IconButton as MuiIconButton } from '@mui/material';
 import { IconButtonOwnProps } from '@mui/material/IconButton/IconButton';
 import { ComponentProps } from 'react';
-import styles from './icon-button.module.scss';
 
 export type IconButtonProps = IconButtonOwnProps & ComponentProps<'button'>;
 
