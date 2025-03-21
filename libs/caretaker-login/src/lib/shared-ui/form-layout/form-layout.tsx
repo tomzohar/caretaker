@@ -1,8 +1,8 @@
-import styles from './form-layout.module.scss';
 import { FormEvent, useState } from 'react';
 import { Form, FormItem } from '@caretaker/caretaker-types';
 import { formItemRenderers } from '../../const/form-item-renderers';
 import { Button } from '@caretaker/caretaker-ui';
+import styles from './form-layout.module.scss';
 
 export function FormLayout<T extends Record<string, any>>(props: Form<T>) {
   const [formState, setFormState] = useState<T>({} as T);
