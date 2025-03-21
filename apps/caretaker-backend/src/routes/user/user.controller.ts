@@ -15,6 +15,9 @@ import {
 } from './user.erros';
 import { isObject } from '../../utils/object.utils';
 import { isBoolean } from '../../utils/boolean.utils';
+import * as bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 10;
 
 const getUserFindOptionsSelect = (
   options: FindOptionsSelect<Omit<UserRecord, 'account'>> = {}
@@ -88,6 +91,9 @@ class UserController {
 
   async createUser(userDetails: Partial<UserRecord>): Promise<UserRecord> {
     try {
+      if (userDetails.password) {
+        userDetails.password = await bcrypt.hash(userDetails.password, SALT_ROUNDS);
+      }
       const user = this.users.create(userDetails);
       return this.users.save(user);
     } catch (err) {
