@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-
-const pathToEnv = path.resolve(__dirname + '/../' + '.env');
+const pathToEnv = path.resolve(__dirname + '../../../../.env');
 dotenv.config({
   path: pathToEnv,
 });
@@ -14,6 +13,8 @@ import PatientRecord from './entities/patient/patient.entity';
 import { AppDataSource } from './config/database';
 import { UserRecord } from './entities/user/user.entity';
 import redisClient from './cache/redis-client';
+import userController from './routes/user/user.controller';
+import { LoginController } from './routes/login/login.controller';
 
 const replContext = {
   db: AppDataSource,
@@ -22,11 +23,13 @@ const replContext = {
   AccountRecord,
   PostRecord,
   PatientRecord,
+  userController,
+  LoginController,
   users: AppDataSource.getRepository(UserRecord),
   accounts: AppDataSource.getRepository(AccountRecord),
   posts: AppDataSource.getRepository(PostRecord),
   patients: AppDataSource.getRepository(PatientRecord),
-}
+};
 
 const initREPL = async () => {
   await AppDataSource.initialize();

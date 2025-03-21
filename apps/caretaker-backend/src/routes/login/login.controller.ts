@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import UserController from "../user/user.controller";
 import {UserLoginFailed, UserNotFoundError} from "../user/user.erros";
 import SessionService from "../../services/session.service";
@@ -10,7 +11,8 @@ export class LoginController {
             throw new UserNotFoundError();
         }
 
-        if (user.password !== password) {
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
             throw new UserLoginFailed();
         }
 
