@@ -9,6 +9,7 @@ on:
 permissions:
   actions: read
   contents: read
+  checks: write  # Add permission to write check results
 
 jobs:
   verify:
@@ -41,10 +42,36 @@ jobs:
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       # When you enable task distribution, run the e2e-ci task instead of e2e
       - name: Lint
+        id: lint
         run: npx nx affected -t lint
 
       - name: Test
+        id: test
         run: npx nx affected -t test
 
       - name: Build
+        id: build
         run: npx nx affected -t build
+
+      - name: Report Status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const conclusion = (
+              context.job.status === 'success' ? 'success' :
+              context.job.status === 'failure' ? 'failure' :
+              'neutral'
+            );
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Verify',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: conclusion,
+              output: {
+                title: 'Verification Results',
+                summary: `Lint, Test, and Build ${conclusion === 'success' ? 'passed' : 'failed'}`
+              }
+            });
