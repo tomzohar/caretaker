@@ -11,7 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  main:
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +31,8 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - run: npm ci --legacy-peer-deps
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
       # - run: npx playwright install --with-deps # TODO: Uncomment this when e2e is setup
       - uses: nrwl/nx-set-shas@v4
 
@@ -38,4 +40,11 @@ jobs:
       # - run: npx nx-cloud record -- echo Hello World
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       # When you enable task distribution, run the e2e-ci task instead of e2e
-      - run: npx nx affected -t lint test build #e2e - when e2e tests are setup
+      - name: Lint
+        run: npx nx affected -t lint
+
+      - name: Test
+        run: npx nx affected -t test
+
+      - name: Build
+        run: npx nx affected -t build
