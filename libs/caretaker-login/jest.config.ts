@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'caretaker-login',
   preset: '../../jest.preset.js',

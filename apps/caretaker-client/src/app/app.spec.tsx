@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Outlet } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import App from './app';
 import { UserStore } from '@caretaker/caretaker-data';
 import '@testing-library/jest-dom';

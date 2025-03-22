@@ -30,7 +30,7 @@ router.post(
 
 router.get(
   '/:id',
-  runInContext(async ({ req, res, context }) => {
+  runInContext(async ({ req, res }) => {
     try {
       const accountId = Number(req.params.id);
       const account = await AccountsController.getAccountById(accountId);

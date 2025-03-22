@@ -4,7 +4,7 @@ import { formItemRenderers } from '../../const/form-item-renderers';
 import { Button } from '@caretaker/caretaker-ui';
 import styles from './form-layout.module.scss';
 
-export function FormLayout<T extends Record<string, any>>(props: Form<T>) {
+export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
   const [formState, setFormState] = useState<T>({} as T);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

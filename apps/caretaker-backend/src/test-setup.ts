@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { DataSource, Repository } from 'typeorm';
 import { Redis } from 'ioredis';
+import { UserRecord } from './entities/user/user.entity';
 
 // Mock Redis client
 const mockRedisClient = {
@@ -17,10 +18,10 @@ jest.mock('./cache/redis-client', () => ({
 
 // Mock TypeORM's AppDataSource
 const mockRepository = {
-  find: jest.fn<() => Promise<any[]>>(() => Promise.resolve([])),
-  findOne: jest.fn<() => Promise<any | null>>(() => Promise.resolve(null)),
-  save: jest.fn<(entity: any) => Promise<any>>((entity) => Promise.resolve({ id: 1, ...entity })),
-} as unknown as Repository<any>;
+  find: jest.fn<() => Promise<UserRecord[]>>(() => Promise.resolve([])),
+  findOne: jest.fn<() => Promise<UserRecord | null>>(() => Promise.resolve(null)),
+  save: jest.fn<(entity: Partial<UserRecord>) => Promise<UserRecord>>((entity) => Promise.resolve({ id: 1, ...entity } as UserRecord)),
+} as unknown as Repository<UserRecord>;
 
 const mockDataSource = {
   initialize: jest.fn<() => Promise<DataSource>>(() => 

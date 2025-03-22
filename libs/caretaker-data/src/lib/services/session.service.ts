@@ -25,6 +25,7 @@ export class SessionService {
       const user = await UserApiService.getCurrentUser();
       return user;
     } catch (error) {
+      console.error('Failed to validate session:', error);
       SessionService.removeToken();
       return null;
     }
@@ -38,7 +39,7 @@ export class SessionService {
         return user;
       }
     } catch (error) {
-      console.log(error);
+      console.error('Failed to create session:', error);
     }
     return null;
   }

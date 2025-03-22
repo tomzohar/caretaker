@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './app/app';
-import { BrowserRouter, redirect, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
 import {
   AccountDetails,
@@ -12,7 +12,7 @@ import {
 import { Home } from '@caretaker/home';
 import { PatientsPage } from '@caretaker/patients-page';
 import { autorun } from 'mobx';
-import { AlertType, User } from '@caretaker/caretaker-types';
+import { User } from '@caretaker/caretaker-types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AlertComponent } from '@caretaker/caretaker-ui';
 

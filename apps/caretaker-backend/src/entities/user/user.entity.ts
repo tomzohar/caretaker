@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity, ManyToMany, ManyToOne,
+  Entity, ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn

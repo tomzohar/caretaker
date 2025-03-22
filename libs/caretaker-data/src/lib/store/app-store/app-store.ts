@@ -80,6 +80,7 @@ export class AppStore {
       const pendingAlerts = Array.from(this.alertQueue.values());
       return JSON.parse(pendingAlerts[0]) as Alert;
     } catch (error) {
+      console.error('Failed to parse next alert:', error);
       return null;
     }
   }
