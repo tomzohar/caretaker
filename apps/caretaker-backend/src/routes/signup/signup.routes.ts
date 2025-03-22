@@ -1,7 +1,6 @@
 import { Router, Response } from 'express';
 import SignupController from './signup.controller';
 import UserController from '../user/user.controller';
-import SessionService from '../../services/session.service';
 import { UserNotFoundError } from '../user/user.erros';
 
 const router = Router();

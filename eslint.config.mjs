@@ -23,6 +23,7 @@ export default [
           ],
         },
       ],
+      'no-explicit-any': 'off',
     },
   },
   {

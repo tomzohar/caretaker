@@ -1,4 +1,7 @@
 import { fetchWrapper } from '../fetch/fetch-wrapper';
+import { FetchParams } from '../types/fetch-params.interface';
+
+type FetchBody = FetchParams['body'];
 
 export class HttpService {
 
@@ -9,19 +12,19 @@ export class HttpService {
     });
   }
 
-  public static post<R>(url: string, body: any): Promise<R> {
+  public static post<R, T extends NonNullable<FetchBody>>(url: string, body: T): Promise<R> {
     return fetchWrapper({
       url, method: 'POST', body
     });
   }
 
-  public static put<R>(url: string, body: any): Promise<R> {
+  public static put<R, T extends NonNullable<FetchBody>>(url: string, body: T): Promise<R> {
     return fetchWrapper({
       url, method: 'PUT', body
     });
   }
 
-  public static patch<R>(url: string, body: any): Promise<R> {
+  public static patch<R, T extends NonNullable<FetchBody>>(url: string, body: T): Promise<R> {
     return fetchWrapper({
       url, method: 'PATCH', body
     });

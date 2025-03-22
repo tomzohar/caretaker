@@ -4,7 +4,7 @@ import { AccountCircle, Logout } from '@mui/icons-material';
 import Person2Icon from '@mui/icons-material/Person2';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
-import { AppStore, appStore, SessionService, userStore } from '@caretaker/caretaker-data';
+import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
 import { useNavigate } from 'react-router-dom';
 import styles from './topnav.module.scss';
 

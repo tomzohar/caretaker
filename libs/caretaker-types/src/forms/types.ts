@@ -13,7 +13,7 @@ export interface FormItem<T> {
   label: string;
 }
 
-export interface Form<T extends Record<string, any>> {
+export interface Form<T extends Record<string, unknown>> {
   items: FormItem<keyof T>[];
   onSubmit: (formValue: T) => void;
   buttonsConfig: (ButtonProps & { text: string })[];

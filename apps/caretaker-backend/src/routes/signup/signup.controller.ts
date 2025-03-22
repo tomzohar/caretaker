@@ -62,7 +62,7 @@ class SignupController {
         throw new Error('Invalid token');
       }
 
-      const user = await UserController.createUser({ email, password, name });
+      await UserController.createUser({ email, password, name });
       await redisClient.del(getSignupTokenCacheKey({ email }));
       return LoginController.login(email, password);
     } catch (err) {

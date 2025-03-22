@@ -1,3 +1,4 @@
+/* et-disable */
 export default {
   displayName: 'caretaker-backend',
   preset: '../../jest.preset.js',
@@ -7,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/caretaker-backend',
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 };
