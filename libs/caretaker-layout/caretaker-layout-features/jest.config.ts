@@ -8,4 +8,5 @@ export default {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory:
     '../../../coverage/libs/caretaker-layout/caretaker-layout-features',
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 };
