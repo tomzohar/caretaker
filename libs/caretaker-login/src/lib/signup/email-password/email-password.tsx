@@ -36,26 +36,31 @@ export function EmailPassword({ store }: { store: UserStore }) {
         id: 'email',
         label: 'Email',
         type: FormItemType.EMAIL,
+        required: true
       },
       {
         id: 'password',
         label: 'Password',
         type: FormItemType.PASSWORD,
+        required: true
       },
       {
         id: 'confirm',
         label: 'Confirm password',
         type: FormItemType.PASSWORD,
+        required: true
       },
       {
         id: 'firstName',
         label: 'First name',
         type: FormItemType.TEXT,
+        required: true
       },
       {
         id: 'lastName',
         label: 'Last name',
         type: FormItemType.TEXT,
+        required: true
       }
     ],
     onSubmit: handleSubmit,
