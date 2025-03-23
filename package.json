@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
+    "start": "nx run-many --target=serve --projects=caretaker-client,caretaker-backend --parallel",
     "db:fresh": "npm run db:down && npm run db:up",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down -v",
