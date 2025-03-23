@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Form, FormItem } from '@caretaker/caretaker-types';
+import { Form, FormItem, FormItemType } from '@caretaker/caretaker-types';
 import { formItemRenderers } from '../../const/form-item-renderers';
 import { Button } from '@caretaker/caretaker-ui';
 import styles from './form-layout.module.scss';
@@ -17,7 +17,7 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
       return `${item.label} is required`;
     }
     
-    if (item.type === 'password' && typeof value === 'string') {
+    if (item.type === FormItemType.PASSWORD && typeof value === 'string') {
       if (value.length < 8) {
         return 'Password must be at least 8 characters long';
       }
@@ -26,6 +26,14 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
     if (id === 'confirm' && typeof value === 'string') {
       if (value !== formState['password']) {
         return 'Passwords do not match';
+      }
+    }
+
+    // Run custom validation if provided
+    if (item.validate) {
+      const customError = item.validate(value);
+      if (customError) {
+        return customError;
       }
     }
 

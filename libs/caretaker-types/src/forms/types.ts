@@ -12,6 +12,7 @@ export interface FormItem<T> {
   type: FormItemType;
   label: string;
   required?: boolean;
+  validate?: (value: unknown) => string;
 }
 
 export interface Form<T extends Record<string, unknown>> {
