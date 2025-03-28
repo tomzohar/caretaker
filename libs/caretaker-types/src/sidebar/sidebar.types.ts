@@ -6,3 +6,11 @@ export interface SidebarItem {
   icon?: SvgIconComponent;
   action?: () => void;
 }
+
+export interface SidebarSection {
+  id: string;
+  title?: string;
+  items: SidebarItem[];
+}
+
+export type SidebarContent = SidebarSection[];
