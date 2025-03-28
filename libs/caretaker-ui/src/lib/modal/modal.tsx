@@ -26,6 +26,9 @@ export const Modal = observer(({ appState }: ModalProps) => {
     if (reason === 'backdropClick' && modalConfig.disableCloseOnClickOutside) {
       return;
     }
+    if (modalConfig.onClose) {
+      modalConfig.onClose();
+    }
     appState.closeModal();
   };
 
@@ -53,7 +56,7 @@ export const Modal = observer(({ appState }: ModalProps) => {
             <Button
               key={index}
               onClick={() => {
-                action?.onClick?.();
+                action.onClick?.();
                 handleClose();
               }}
               variant={action.variant || 'text'}
