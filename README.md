@@ -1,93 +1,105 @@
 # Caretaker
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A full-stack application for managing caretaker services.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## Prerequisites
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- Node.js (v18 or higher)
+- nvm (Node Version Manager)
+- Docker and Docker Compose
+- npm (comes with Node.js)
 
-## Finish your CI setup
+## Setup
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/lAtLa7aDrK)
+1. Install nvm if you haven't already:
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+   ```
 
+2. Restart your terminal or run:
+   ```bash
+   source ~/.bashrc  # for bash
+   # or
+   source ~/.zshrc   # for zsh
+   ```
 
-## Run tasks
+3. Install and use the correct Node.js version:
+   ```bash
+   nvm install 18
+   nvm use 18
+   ```
 
-To run the dev server for your app, use:
+4. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### Backend
-```sh
-nx serve caretaker-api
+5. Set up the database:
+   ```bash
+   npm run db:fresh
+   ```
+
+## Available Scripts
+
+- `npm start` - Start both frontend and backend servers in parallel
+- `npm run db:fresh` - Reset and restart the database (docker-compose down -v && docker-compose up -d)
+- `npm run db:up` - Start the database containers
+- `npm run db:down` - Stop and remove the database containers
+- `npm run console` - Start the TypeScript REPL console
+- `npm test` - Run all tests across all projects
+- `npm run lint` - Run linting across all projects
+- `npm run build` - Build all projects
+
+## Project Structure
+
+The project is organized as a monorepo using Nx:
+
+- `apps/` - Contains the main applications
+  - `caretaker-client/` - Frontend React application
+  - `caretaker-backend/` - Backend Node.js application
+- `libs/` - Contains shared libraries and components
+  - `caretaker-login/` - Login and authentication components
+  - `caretaker-data/` - Data management and API services
+  - `caretaker-types/` - Shared TypeScript types
+  - `caretaker-ui/` - Shared UI components
+
+## Development
+
+1. Start the development servers:
+   ```bash
+   npm start
+   ```
+
+2. The application will be available at:
+   - Frontend: http://localhost:4200
+   - Backend: http://localhost:3000
+
+## Testing
+
+Run all tests:
+```bash
+npm test
 ```
 
-### Frontend
-```sh
-npx nx serve caretaker-client
+Run tests for a specific project:
+```bash
+npx nx test [project-name]
 ```
 
-### Console
-```sh
-nx run caretaker-api:console
+## Building for Production
+
+Build all projects:
+```bash
+npm run build
 ```
 
-To create a production bundle:
+## Contributing
 
-```sh
-npx nx build caretaker-client
-```
+1. Create a new branch for your feature
+2. Make your changes
+3. Run tests and linting
+4. Submit a pull request
 
-To see all available targets to run for a project, run:
+## License
 
-```sh
-npx nx show project caretaker-client
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/react:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/react:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT
