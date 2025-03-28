@@ -2,14 +2,14 @@ import { action, makeAutoObservable, observable, runInAction } from 'mobx';
 import {
   Alert,
   ALERTS_DEFAULT_TIME,
-  SidebarItem,
+  SidebarContent,
   ModalConfig,
 } from '@caretaker/caretaker-types';
 import { debounce } from '@mui/material';
 
 export class AppStore {
   sidebarOpen = false;
-  sidebarItems: SidebarItem[] = [];
+  sidebarContent: SidebarContent = [];
   alert: Alert | null = null;
   alertQueue = new Set<string>();
   modalConfig: ModalConfig | null = null;
@@ -21,7 +21,7 @@ export class AppStore {
       openSidebar: action,
       closeSidebar: action,
       toggleSidebar: action,
-      setSidebarItems: action,
+      setSidebarContent: action,
       setAlert: action,
       alert: observable,
       alertQueue: false,
@@ -43,8 +43,8 @@ export class AppStore {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
-  setSidebarItems(items: SidebarItem[]) {
-    this.sidebarItems = items;
+  setSidebarContent(content: SidebarContent) {
+    this.sidebarContent = content;
   }
 
   setAlert(alert: Alert) {

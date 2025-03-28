@@ -7,7 +7,13 @@ describe('Sidebar', () => {
   it('should render successfully', () => {
     const mockAppStore: Partial<AppStore> = {
       sidebarOpen: false,
-      sidebarItems: [] as SidebarItem[],
+      sidebarContent: [
+        {
+          id: 'main',
+          title: 'Main',
+          items: [] as SidebarItem[],
+        },
+      ],
       closeSidebar: () => void 0,
     };
 

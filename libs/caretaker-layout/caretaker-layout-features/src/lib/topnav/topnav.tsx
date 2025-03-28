@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AccountCircle, Logout } from '@mui/icons-material';
 import Person2Icon from '@mui/icons-material/Person2';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
 import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,25 @@ export function Topnav() {
     SessionService.logout();
     userStore.set(null);
     navigate('/login');
+  };
+
+  const openInviteDialog = () => {
+    appStore.openModal({
+      title: 'Invite User',
+      content: (
+        <Box sx={{ p: 2 }}>
+          <Typography>
+            This feature is coming soon! You'll be able to invite other users to join your organization.
+          </Typography>
+        </Box>
+      ),
+      actions: [
+        {
+          text: 'Close',
+          variant: 'text'
+        }
+      ]
+    });
   };
 
   const menuItems: MenuItem[] = [
@@ -35,14 +55,30 @@ export function Topnav() {
   ];
 
   const toggleSidebar = () => {
-    appStore.setSidebarItems([
+    appStore.setSidebarContent([
       {
-        id: 'patients',
-        text: 'Patients',
-        icon: Diversity1Icon,
-        action: () => {
-          navigate('/patients');
-        }
+        id: 'actions',
+        items: [
+          {
+            id: 'invite',
+            text: 'Invite User',
+            icon: PersonAddIcon,
+            action: openInviteDialog
+          }
+        ]
+      },
+      {
+        id: 'main',
+        items: [
+          {
+            id: 'patients',
+            text: 'Patients',
+            icon: Diversity1Icon,
+            action: () => {
+              navigate('/patients');
+            }
+          }
+        ]
       }
     ]);
     appStore.toggleSidebar();
@@ -58,8 +94,9 @@ export function Topnav() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={toggleSidebar}
           >
-            <MenuIcon onClick={toggleSidebar} />
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Caretaker
