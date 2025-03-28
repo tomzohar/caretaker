@@ -1,0 +1,13 @@
+.modalTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 0 !important;
+  margin-right: 0;
+}
+
+.closeButton {
+  margin: -8px 4px -8px 8px !important;
+  position: relative;
+  right: 4px;
+} 
