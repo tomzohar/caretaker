@@ -7,14 +7,16 @@ export enum FormItemType {
   NUMBER = 'number',
 }
 
-export interface FormItem<T> {
-  id: T;
+export interface FormItem<FormType> {
+  id: keyof FormType;
   type: FormItemType;
   label: string;
+  required?: boolean;
+  validate?: (value: unknown, formState: FormType) => string;
 }
 
 export interface Form<T extends Record<string, unknown>> {
-  items: FormItem<keyof T>[];
+  items: FormItem<T>[];
   onSubmit: (formValue: T) => void;
   buttonsConfig: (ButtonProps & { text: string })[];
 }

@@ -1,55 +1,71 @@
-import { Card, TextField, Typography } from '@mui/material';
-import { Button } from '@caretaker/caretaker-ui';
-import { FormEventHandler, useState } from 'react';
+import { Card, Typography } from '@mui/material';
 import { SessionService, UserStore } from '@caretaker/caretaker-data';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './login.module.scss';
+import { Form, FormItemType } from '@caretaker/caretaker-types';
+import FormLayout from '../shared-ui/form-layout/form-layout';
+
+type LoginForm = {
+  email: string;
+  password: string;
+};
 
 export function Login({ userStore }: { userStore: UserStore }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-
-    const user = await SessionService.createSession({ email, password });
+  const handleSubmit = async (form: LoginForm) => {
+    const user = await SessionService.createSession(form);
     if (!user) {
-      alert('Invalid email or password, try signup');
+      // TODO: Add proper error handling through app state
+      alert('Invalid email or password');
       return;
     }
     userStore.set(user);
     navigate('/');
   };
 
+  const loginForm: Form<LoginForm> = {
+    items: [
+      {
+        id: 'email',
+        label: 'Email',
+        type: FormItemType.EMAIL,
+        required: true
+      },
+      {
+        id: 'password',
+        label: 'Password',
+        type: FormItemType.PASSWORD,
+        required: true,
+        validate: (value: unknown) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value.length < 8) {
+            return 'Password must be at least 8 characters long';
+          }
+          return '';
+        }
+      }
+    ],
+    onSubmit: handleSubmit,
+    buttonsConfig: [
+      {
+        type: 'submit',
+        variant: 'contained',
+        text: 'Login',
+        size: 'large',
+        fullWidth: true,
+        sx: { mt: 2 }
+      }
+    ]
+  };
+
   return (
     <div className={styles.loginPage}>
       <Card className={styles.loginWrapper}>
         <Typography variant={'h2'}>Caretaker</Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            className={styles.loginFormItem}
-            label={'Email'}
-            type={'email'}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <TextField
-            className={styles.loginFormItem}
-            label={'Password'}
-            type={'password'}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <Button
-            className={styles.loginFormButton}
-            type={'submit'}
-            variant={'contained'}
-            size={'large'}
-          >
-            Login
-          </Button>
-        </form>
+        <FormLayout {...loginForm} />
         <Typography sx={{ mt: 1 }} variant={'body2'}>
           Don't have an account? <Link to={'/signup'}>Signup</Link>
         </Typography>
