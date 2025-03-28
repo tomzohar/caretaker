@@ -13,7 +13,7 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
   const validateField = (id: keyof T, value: unknown) => {
     const item = props.items.find((i) => i.id === id);
     if (!item) return '';
-    return validateFormField(item, value);
+    return validateFormField(item, value, formState);
   };
 
   const validateForm = () => {

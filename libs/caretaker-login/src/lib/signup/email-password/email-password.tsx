@@ -58,11 +58,11 @@ export function EmailPassword({ store }: { store: UserStore }) {
         label: 'Confirm password',
         type: FormItemType.PASSWORD,
         required: true,
-        validate: (value: unknown) => {
+        validate: (value: unknown, formState: SignupForm) => {
           if (typeof value !== 'string') {
             return 'Password must be a string';
           }
-          if (value !== signupForm.items.find(item => item.id === 'password')?.value) {
+          if (value !== formState['password']) {
             return 'Passwords do not match';
           }
           return '';
