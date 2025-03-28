@@ -28,8 +28,16 @@ export class AccountsController {
 
       const account = accounts.create(accountDetails);
       await accounts.save(account);
+      
+      // Update the user to point to this account (this is the owning side of the relationship)
+      user.account = account;
       await userController.updateUser(user.id, { account });
-      return accounts.findBy({ id: account.id });
+      
+      // Now fetch the account with its relationships
+      return accounts.findOne({ 
+        where: { id: account.id },
+        relations: { users: true }
+      });
     } catch (err) {
       throw new AccountCreationFailedError(err);
     }
