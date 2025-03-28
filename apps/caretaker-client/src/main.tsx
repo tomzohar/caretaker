@@ -25,6 +25,8 @@ autorun(async () => {
     const user: User | null = await SessionService.validateSession();
     userStore.set(user);
 
+    console.log('user', user);
+
     if (!user && pathname !== '/login') {
       setPath('/login');
     }
