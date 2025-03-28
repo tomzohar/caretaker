@@ -42,13 +42,31 @@ export function EmailPassword({ store }: { store: UserStore }) {
         id: 'password',
         label: 'Password',
         type: FormItemType.PASSWORD,
-        required: true
+        required: true,
+        validate: (value: unknown) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value.length < 8) {
+            return 'Password must be at least 8 characters long';
+          }
+          return '';
+        }
       },
       {
         id: 'confirm',
         label: 'Confirm password',
         type: FormItemType.PASSWORD,
-        required: true
+        required: true,
+        validate: (value: unknown) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value !== signupForm.items.find(item => item.id === 'password')?.value) {
+            return 'Passwords do not match';
+          }
+          return '';
+        }
       },
       {
         id: 'firstName',

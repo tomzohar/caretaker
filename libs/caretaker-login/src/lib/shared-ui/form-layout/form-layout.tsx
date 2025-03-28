@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Form, FormItem, FormItemType } from '@caretaker/caretaker-types';
 import { formItemRenderers } from '../../const/form-item-renderers';
 import { Button } from '@caretaker/caretaker-ui';
+import { validateFormField } from './form-validation';
 import styles from './form-layout.module.scss';
 
 export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
@@ -12,32 +13,7 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
   const validateField = (id: keyof T, value: unknown) => {
     const item = props.items.find((i) => i.id === id);
     if (!item) return '';
-    
-    if (!value && item.required) {
-      return `${item.label} is required`;
-    }
-    
-    if (item.type === FormItemType.PASSWORD && typeof value === 'string') {
-      if (value.length < 8) {
-        return 'Password must be at least 8 characters long';
-      }
-    }
-
-    if (id === 'confirm' && typeof value === 'string') {
-      if (value !== formState['password']) {
-        return 'Passwords do not match';
-      }
-    }
-
-    // Run custom validation if provided
-    if (item.validate) {
-      const customError = item.validate(value);
-      if (customError) {
-        return customError;
-      }
-    }
-
-    return '';
+    return validateFormField(item, value);
   };
 
   const validateForm = () => {

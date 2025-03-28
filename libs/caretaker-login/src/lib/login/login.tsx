@@ -36,7 +36,16 @@ export function Login({ userStore }: { userStore: UserStore }) {
         id: 'password',
         label: 'Password',
         type: FormItemType.PASSWORD,
-        required: true
+        required: true,
+        validate: (value: unknown) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value.length < 8) {
+            return 'Password must be at least 8 characters long';
+          }
+          return '';
+        }
       }
     ],
     onSubmit: handleSubmit,
