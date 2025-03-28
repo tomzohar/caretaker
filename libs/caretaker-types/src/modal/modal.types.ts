@@ -1,7 +1,7 @@
 export interface ModalAction {
   text: string;
   variant?: 'text' | 'outlined' | 'contained';
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export interface ModalConfig {
@@ -10,4 +10,5 @@ export interface ModalConfig {
   actions?: ModalAction[];
   onClose?: () => void;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  disableCloseOnClickOutside?: boolean;
 } 
