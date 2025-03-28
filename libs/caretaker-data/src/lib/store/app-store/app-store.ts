@@ -12,6 +12,7 @@ export class AppStore {
   sidebarContent: SidebarContent = [];
   alert: Alert | null = null;
   alertQueue = new Set<string>();
+  modalConfig: ModalConfig | null = null;
   private cleanupTimer: NodeJS.Timeout | null = null;
 
   constructor() {
@@ -24,6 +25,9 @@ export class AppStore {
       setAlert: action,
       alert: observable,
       alertQueue: false,
+      modalConfig: observable,
+      openModal: action,
+      closeModal: action,
     });
   }
 
@@ -96,6 +100,17 @@ export class AppStore {
       this.alertQueue.delete(JSON.stringify(nextAlert));
       this.setAlert(nextAlert);
     }
+  }
+
+  openModal(config: ModalConfig) {
+    this.modalConfig = config;
+  }
+
+  closeModal() {
+    if (this.modalConfig?.onClose) {
+      this.modalConfig.onClose();
+    }
+    this.modalConfig = null;
   }
 }
 

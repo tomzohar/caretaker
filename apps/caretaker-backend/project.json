@@ -43,6 +43,8 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "caretaker-backend:build",
+        "inspect": "inspect",
+        "port": 9229,
         "runBuildTargetDependencies": false
       },
       "configurations": {
