@@ -59,7 +59,7 @@ export class AppStore {
         this.alert = alert;
       });
 
-      const cleanup = () => {
+      const cleanup: () => void = () => {
         runInAction(() => {
           this.alert = null;
         });
@@ -83,6 +83,9 @@ export class AppStore {
   private getNextAlert() {
     try {
       const pendingAlerts = Array.from(this.alertQueue.values());
+      if (!pendingAlerts?.length) {
+        return null;
+      }
       return JSON.parse(pendingAlerts[0]) as Alert;
     } catch (error) {
       console.error('Failed to parse next alert:', error);

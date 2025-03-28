@@ -26,6 +26,7 @@
       "@caretaker/caretaker-types": ["libs/caretaker-types/src/index.ts"],
       "@caretaker/caretaker-ui": ["libs/caretaker-ui/src/index.ts"],
       "@caretaker/home": ["libs/features/home/src/index.ts"],
+      "@caretaker/invite": ["libs/caretaker-invite/src/index.ts"],
       "@caretaker/patients-page": ["libs/features/patients-page/src/index.ts"]
     }
   },
