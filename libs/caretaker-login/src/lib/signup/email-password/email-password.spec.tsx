@@ -129,7 +129,9 @@ describe('EmailPassword', () => {
 
   it('should handle failed signup', async () => {
     (UserApiService.signup as jest.Mock).mockResolvedValueOnce(null);
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation((message) => {
+      console.log(`Window alert: ${message}`);
+    });
     
     renderEmailPassword();
     
