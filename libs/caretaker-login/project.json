@@ -5,5 +5,13 @@
   "projectType": "library",
   "tags": [],
   "// targets": "to see all targets run: nx show project caretaker-login --web",
-  "targets": {}
+  "targets": {
+    "test:watch": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/caretaker-login/jest.config.ts",
+        "watch": true
+      }
+    }
+  }
 }

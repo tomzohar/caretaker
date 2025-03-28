@@ -36,26 +36,49 @@ export function EmailPassword({ store }: { store: UserStore }) {
         id: 'email',
         label: 'Email',
         type: FormItemType.EMAIL,
+        required: true
       },
       {
         id: 'password',
         label: 'Password',
         type: FormItemType.PASSWORD,
+        required: true,
+        validate: (value: unknown) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value.length < 8) {
+            return 'Password must be at least 8 characters long';
+          }
+          return '';
+        }
       },
       {
         id: 'confirm',
         label: 'Confirm password',
         type: FormItemType.PASSWORD,
+        required: true,
+        validate: (value: unknown, formState: SignupForm) => {
+          if (typeof value !== 'string') {
+            return 'Password must be a string';
+          }
+          if (value !== formState['password']) {
+            return 'Passwords do not match';
+          }
+          return '';
+        }
       },
       {
         id: 'firstName',
         label: 'First name',
         type: FormItemType.TEXT,
+        required: true
       },
       {
         id: 'lastName',
         label: 'Last name',
         type: FormItemType.TEXT,
+        required: true
       }
     ],
     onSubmit: handleSubmit,

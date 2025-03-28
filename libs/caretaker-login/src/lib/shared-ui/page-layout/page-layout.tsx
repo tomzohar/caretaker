@@ -7,8 +7,9 @@ export function PageLayout(props: PropsWithChildren<ComponentProps<'div'> & {tit
   const { title, children } = props;
   return (
     <div className={styles.signupPage}>
-      <Card {...props} className={classNames(styles.signupFormWrapper, props.className)}>
-        <h3>EDITING</h3>
+      <Card 
+        className={classNames(styles.signupFormWrapper, props.className)}
+      >
         <Typography variant={'h2'}>{title}</Typography>
         {children}
       </Card>

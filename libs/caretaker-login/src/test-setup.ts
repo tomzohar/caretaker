@@ -3,7 +3,7 @@ import { TextEncoder } from 'util';
 
 // Polyfill TextEncoder/TextDecoder
 global.TextEncoder = TextEncoder;
-(global as any).TextDecoder = require('util').TextDecoder;
+(global as unknown as {TextDecoder: TextDecoder}).TextDecoder = require('util').TextDecoder;
 
 // Mock react-router-dom hooks
 jest.mock('react-router-dom', () => ({

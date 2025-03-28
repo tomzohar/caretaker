@@ -5,7 +5,7 @@ import { AppStore, useCreateAccount } from '@caretaker/caretaker-data';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-export interface AccountDetailsFormValue {
+export interface AccountDetailsFormValue extends Record<string, unknown> {
   accountName: string;
 }
 
@@ -34,6 +34,19 @@ export const AccountDetails = observer(
           id: 'accountName',
           type: FormItemType.TEXT,
           label: 'Account name',
+          required: true,
+          validate: (value: unknown) => {
+            if (typeof value !== 'string') {
+              return 'Account name must be a string';
+            }
+            if (value.length < 3) {
+              return 'Account name must be at least 3 characters long';
+            }
+            if (value.length > 50) {
+              return 'Account name must be less than 50 characters long';
+            }
+            return '';
+          }
         },
       ],
       onSubmit: handleSubmit,
