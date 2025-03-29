@@ -1,14 +1,18 @@
-import { AppBar, Box, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { AccountCircle, Logout } from '@mui/icons-material';
-import Person2Icon from '@mui/icons-material/Person2';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
-import { appStore, SessionService, userStore, InviteApiService } from '@caretaker/caretaker-data';
-import { Invite, InviteFormData } from '@caretaker/invite';
+import {
+  appStore,
+  InviteApiService,
+  SessionService,
+  userStore,
+} from '@caretaker/caretaker-data';
 import { AlertType } from '@caretaker/caretaker-types';
+import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
+import { Invite, InviteFormData } from '@caretaker/invite';
+import { AccountCircle, Logout } from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Person2Icon from '@mui/icons-material/Person2';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getSidebarConfig } from './sidebar-config';
 import styles from './topnav.module.scss';
 
 export function Topnav() {
@@ -25,14 +29,16 @@ export function Topnav() {
       await InviteApiService.inviteToAccount({ emails: data.emails });
       appStore.closeModal();
       appStore.setAlert({
-        message: `Invitation${data.emails.length > 1 ? 's' : ''} sent to ${data.emails.join(', ')}`,
-        type: 'success' as AlertType
+        message: `Invitation${
+          data.emails.length > 1 ? 's' : ''
+        } sent to ${data.emails.join(', ')}`,
+        type: 'success' as AlertType,
       });
     } catch (err) {
       console.error('Failed to send invitations:', err);
       appStore.setAlert({
         message: 'Failed to send invitations. Please try again.',
-        type: AlertType.ERROR
+        type: AlertType.ERROR,
       });
     }
   };
@@ -46,7 +52,7 @@ export function Topnav() {
           onCancel={() => appStore.closeModal()}
         />
       ),
-      disableCloseOnClickOutside: true
+      disableCloseOnClickOutside: true,
     });
   };
 
@@ -68,34 +74,11 @@ export function Topnav() {
   ];
 
   const toggleSidebar = () => {
-    appStore.setSidebarContent([
-      {
-        id: 'actions',
-        items: [
-          {
-            id: 'invite',
-            text: 'Invite User',
-            icon: PersonAddIcon,
-            action: openInviteDialog
-          }
-        ]
-      },
-      {
-        id: 'main',
-        items: [
-          {
-            id: 'patients',
-            text: 'Patients',
-            icon: Diversity1Icon,
-            action: () => {
-              navigate('/patients');
-            }
-          }
-        ]
-      }
-    ]);
+    appStore.setSidebarContent(
+      getSidebarConfig(openInviteDialog, () => navigate('/patients'))
+    );
     appStore.toggleSidebar();
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
