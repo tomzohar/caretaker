@@ -7,14 +7,16 @@ dotenv.config({
 });
 
 import repl from 'node:repl';
-import AccountRecord from './entities/account/account.entity';
-import PostRecord from './entities/post/post.entity';
-import PatientRecord from './entities/patient/patient.entity';
-import { AppDataSource } from './config/database';
-import { UserRecord } from './entities/user/user.entity';
 import redisClient from './cache/redis-client';
-import userController from './routes/user/user.controller';
+import { AppDataSource } from './config/database';
+import AccountRecord from './entities/account/account.entity';
+import { InvitationRecord } from './entities/invitation/invitation.entity';
+import PatientRecord from './entities/patient/patient.entity';
+import PostRecord from './entities/post/post.entity';
+import { UserRecord } from './entities/user/user.entity';
 import { LoginController } from './routes/login/login.controller';
+import userController from './routes/user/user.controller';
+import { InvitationService } from './services';
 
 const replContext = {
   db: AppDataSource,
@@ -23,12 +25,15 @@ const replContext = {
   AccountRecord,
   PostRecord,
   PatientRecord,
+  InvitationRecord,
   userController,
   LoginController,
+  InvitationService,
   users: AppDataSource.getRepository(UserRecord),
   accounts: AppDataSource.getRepository(AccountRecord),
   posts: AppDataSource.getRepository(PostRecord),
   patients: AppDataSource.getRepository(PatientRecord),
+  invitations: AppDataSource.getRepository(InvitationRecord),
 };
 
 const initREPL = async () => {
