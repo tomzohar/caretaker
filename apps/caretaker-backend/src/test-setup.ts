@@ -16,6 +16,15 @@ jest.mock('./cache/redis-client', () => ({
   default: mockRedisClient,
 }));
 
+// Mock InvitationCleanupService
+jest.mock('./services/invitation-cleanup.service', () => ({
+  InvitationCleanupService: {
+    startCleanupSchedule: jest.fn(),
+    stopCleanupSchedule: jest.fn(),
+    runCleanupNow: jest.fn(),
+  },
+}));
+
 // Mock TypeORM's AppDataSource
 const mockRepository = {
   find: jest.fn<() => Promise<UserRecord[]>>(() => Promise.resolve([])),
