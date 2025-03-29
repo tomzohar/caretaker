@@ -1,4 +1,4 @@
-type FetchBody = BodyInit | null | undefined;
+type FetchBody = BodyInit | null | undefined | object;
 
 export interface FetchParams {
   url: string;

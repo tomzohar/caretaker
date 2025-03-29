@@ -5,7 +5,7 @@ import Person2Icon from '@mui/icons-material/Person2';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
-import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
+import { appStore, SessionService, userStore, InviteApiService } from '@caretaker/caretaker-data';
 import { Invite, InviteFormData } from '@caretaker/invite';
 import { AlertType } from '@caretaker/caretaker-types';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +20,21 @@ export function Topnav() {
     navigate('/login');
   };
 
-  const handleInviteSubmit = (data: InviteFormData) => {
-    // TODO: Implement actual invite logic
-    console.log('Inviting user:', data);
-    appStore.closeModal();
-    appStore.setAlert({
-      message: `Invitation sent to ${data.email}`,
-      type: 'success' as AlertType
-    });
+  const handleInviteSubmit = async (data: InviteFormData) => {
+    try {
+      await InviteApiService.inviteToAccount({ emails: data.emails });
+      appStore.closeModal();
+      appStore.setAlert({
+        message: `Invitation${data.emails.length > 1 ? 's' : ''} sent to ${data.emails.join(', ')}`,
+        type: 'success' as AlertType
+      });
+    } catch (err) {
+      console.error('Failed to send invitations:', err);
+      appStore.setAlert({
+        message: 'Failed to send invitations. Please try again.',
+        type: AlertType.ERROR
+      });
+    }
   };
 
   const openInviteDialog = () => {
