@@ -13,8 +13,7 @@ describe('Invite', () => {
     render(<Invite onSubmit={mockOnSubmit} />);
 
     expect(screen.getByLabelText(/email address/i)).toBeTruthy();
-    expect(screen.getByLabelText(/role/i)).toBeTruthy();
-    expect(screen.getByText(/send invitation/i)).toBeTruthy();
+    expect(screen.getByText(/send invitations/i)).toBeTruthy();
   });
 
   it('should show validation error for invalid email', () => {
@@ -22,41 +21,72 @@ describe('Invite', () => {
 
     const emailInput = screen.getByLabelText(/email address/i);
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
 
     expect(
       screen.getByText(/please enter a valid email address/i)
     ).toBeTruthy();
   });
 
-  it('should not call onSubmit with invalid email', () => {
-    render(<Invite onSubmit={mockOnSubmit} />);
-
-    const emailInput = screen.getByLabelText(/email address/i);
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-
-    const submitButton = screen.getByText(/send invitation/i);
-    fireEvent.click(submitButton);
-
-    expect(mockOnSubmit).not.toHaveBeenCalled();
-  });
-
-  it('should call onSubmit with valid data', () => {
+  it('should add valid email as a tag when pressing Enter', () => {
     render(<Invite onSubmit={mockOnSubmit} />);
 
     const emailInput = screen.getByLabelText(/email address/i);
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
 
-    const roleSelect = screen.getByLabelText(/role/i);
-    fireEvent.mouseDown(roleSelect);
-    const adminOption = screen.getByText(/administrator/i);
-    fireEvent.click(adminOption);
+    expect(screen.getByText('test@example.com')).toBeTruthy();
+    expect((emailInput as HTMLInputElement).value).toBe('');
+  });
 
-    const submitButton = screen.getByText(/send invitation/i);
+  it('should not add duplicate emails', () => {
+    render(<Invite onSubmit={mockOnSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email address/i);
+    
+    // Add first email
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    // Try to add same email again
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    expect(screen.getAllByText('test@example.com')).toHaveLength(1);
+    expect(screen.getByText(/this email has already been added/i)).toBeTruthy();
+  });
+
+  it('should remove email when delete button is clicked', () => {
+    render(<Invite onSubmit={mockOnSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email address/i);
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    const deleteButton = screen.getByTestId('CancelIcon');
+    fireEvent.click(deleteButton);
+
+    expect(screen.queryByText('test@example.com')).toBeNull();
+  });
+
+  it('should call onSubmit with all added emails', () => {
+    render(<Invite onSubmit={mockOnSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email address/i);
+    
+    // Add first email
+    fireEvent.change(emailInput, { target: { value: 'test1@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    // Add second email
+    fireEvent.change(emailInput, { target: { value: 'test2@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    const submitButton = screen.getByText(/send invitations/i);
     fireEvent.click(submitButton);
 
     expect(mockOnSubmit).toHaveBeenCalledWith({
-      email: 'test@example.com',
-      role: 'admin',
+      emails: ['test1@example.com', 'test2@example.com'],
     });
   });
 
@@ -74,5 +104,23 @@ describe('Invite', () => {
     render(<Invite onSubmit={mockOnSubmit} />);
 
     expect(screen.queryByText(/cancel/i)).toBeNull();
+  });
+
+  it('should disable submit button when no emails are added', () => {
+    render(<Invite onSubmit={mockOnSubmit} />);
+
+    const submitButton = screen.getByText(/send invitations/i) as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(true);
+  });
+
+  it('should enable submit button when emails are added', () => {
+    render(<Invite onSubmit={mockOnSubmit} />);
+
+    const emailInput = screen.getByLabelText(/email address/i);
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+    const submitButton = screen.getByText(/send invitations/i) as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(false);
   });
 });
