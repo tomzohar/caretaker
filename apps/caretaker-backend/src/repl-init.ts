@@ -16,7 +16,7 @@ import PostRecord from './entities/post/post.entity';
 import { UserRecord } from './entities/user/user.entity';
 import { LoginController } from './routes/login/login.controller';
 import userController from './routes/user/user.controller';
-import { InvitationService } from './services';
+import { InvitationService, InvitationCleanupService } from './services';
 
 const replContext = {
   db: AppDataSource,
@@ -29,6 +29,7 @@ const replContext = {
   userController,
   LoginController,
   InvitationService,
+  InvitationCleanupService,
   users: AppDataSource.getRepository(UserRecord),
   accounts: AppDataSource.getRepository(AccountRecord),
   posts: AppDataSource.getRepository(PostRecord),

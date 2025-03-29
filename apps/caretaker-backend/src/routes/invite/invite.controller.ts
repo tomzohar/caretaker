@@ -26,6 +26,7 @@ export class InviteController {
 
       console.log(`${emails.join(', ')} invited by ${user.name} to account ${user.account.name}`);
     } catch (error) {
+      console.error('Failed to create invitations:', error);
       if (error instanceof AccountNotFoundError) {
         throw error;
       }
@@ -41,7 +42,6 @@ export class InviteController {
     // 2. Send invitation emails to the provided addresses
     // 3. Handle duplicate invitations and validation
 
-      console.error('Failed to create invitations:', error);
       throw new Error('Failed to create invitations');
     }
   }
