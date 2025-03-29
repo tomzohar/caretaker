@@ -1,0 +1,35 @@
+.inviteForm {
+  &.MuiBox-root {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+.formField {
+  &.MuiTextField-root,
+  &.MuiFormControl-root {
+    margin: 16px 0;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+
+  .cancelButton {
+    &.MuiButton-root {
+      min-width: 100px;
+    }
+  }
+
+  .submitButton {
+    &.MuiButton-root {
+      min-width: 140px;
+    }
+  }
+} 

@@ -6,6 +6,8 @@ import Diversity1Icon from '@mui/icons-material/Diversity1';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
 import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
+import { Invite, InviteFormData } from '@caretaker/invite';
+import { AlertType } from '@caretaker/caretaker-types';
 import { useNavigate } from 'react-router-dom';
 import styles from './topnav.module.scss';
 
@@ -18,22 +20,26 @@ export function Topnav() {
     navigate('/login');
   };
 
+  const handleInviteSubmit = (data: InviteFormData) => {
+    // TODO: Implement actual invite logic
+    console.log('Inviting user:', data);
+    appStore.closeModal();
+    appStore.setAlert({
+      message: `Invitation sent to ${data.email}`,
+      type: 'success' as AlertType
+    });
+  };
+
   const openInviteDialog = () => {
     appStore.openModal({
       title: 'Invite User',
       content: (
-        <Box sx={{ p: 2 }}>
-          <Typography>
-            This feature is coming soon! You'll be able to invite other users to join your organization.
-          </Typography>
-        </Box>
+        <Invite
+          onSubmit={handleInviteSubmit}
+          onCancel={() => appStore.closeModal()}
+        />
       ),
-      actions: [
-        {
-          text: 'Close',
-          variant: 'text'
-        }
-      ]
+      disableCloseOnClickOutside: true
     });
   };
 
