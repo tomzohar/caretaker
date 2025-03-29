@@ -4,6 +4,7 @@ import cors from "cors";
 import { AppDataSource } from "./config/database";
 import router from "./routes";
 import {logRequestMiddleware} from "./routes/middleware";
+import { InvitationCleanupService } from "./services";
 
 async function initDB() {
     try {
@@ -22,6 +23,9 @@ async function initApp() {
     app.use(router);
 
     await initDB();
+    
+    // Start invitation cleanup service
+    InvitationCleanupService.startCleanupSchedule();
 
     return app;
 }

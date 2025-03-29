@@ -1,14 +1,15 @@
-import { AppBar, Box, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { AccountCircle, Logout } from '@mui/icons-material';
-import Person2Icon from '@mui/icons-material/Person2';
-import Diversity1Icon from '@mui/icons-material/Diversity1';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {
+  appStore,
+  SessionService,
+  userStore
+} from '@caretaker/caretaker-data';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
-import { appStore, SessionService, userStore } from '@caretaker/caretaker-data';
-import { Invite, InviteFormData } from '@caretaker/invite';
-import { AlertType } from '@caretaker/caretaker-types';
+import { AccountCircle, Logout } from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Person2Icon from '@mui/icons-material/Person2';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getSidebarConfig } from './sidebar-config';
 import styles from './topnav.module.scss';
 
 export function Topnav() {
@@ -18,29 +19,6 @@ export function Topnav() {
     SessionService.logout();
     userStore.set(null);
     navigate('/login');
-  };
-
-  const handleInviteSubmit = (data: InviteFormData) => {
-    // TODO: Implement actual invite logic
-    console.log('Inviting user:', data);
-    appStore.closeModal();
-    appStore.setAlert({
-      message: `Invitation sent to ${data.email}`,
-      type: 'success' as AlertType
-    });
-  };
-
-  const openInviteDialog = () => {
-    appStore.openModal({
-      title: 'Invite User',
-      content: (
-        <Invite
-          onSubmit={handleInviteSubmit}
-          onCancel={() => appStore.closeModal()}
-        />
-      ),
-      disableCloseOnClickOutside: true
-    });
   };
 
   const menuItems: MenuItem[] = [
@@ -61,34 +39,11 @@ export function Topnav() {
   ];
 
   const toggleSidebar = () => {
-    appStore.setSidebarContent([
-      {
-        id: 'actions',
-        items: [
-          {
-            id: 'invite',
-            text: 'Invite User',
-            icon: PersonAddIcon,
-            action: openInviteDialog
-          }
-        ]
-      },
-      {
-        id: 'main',
-        items: [
-          {
-            id: 'patients',
-            text: 'Patients',
-            icon: Diversity1Icon,
-            action: () => {
-              navigate('/patients');
-            }
-          }
-        ]
-      }
-    ]);
+    appStore.setSidebarContent(
+      getSidebarConfig(navigate)
+    );
     appStore.toggleSidebar();
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
