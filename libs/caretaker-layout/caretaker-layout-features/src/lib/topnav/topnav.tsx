@@ -1,12 +1,9 @@
 import {
   appStore,
-  InviteApiService,
   SessionService,
-  userStore,
+  userStore
 } from '@caretaker/caretaker-data';
-import { AlertType } from '@caretaker/caretaker-types';
 import { IconButton, Menu, MenuItem } from '@caretaker/caretaker-ui';
-import { Invite, InviteFormData } from '@caretaker/invite';
 import { AccountCircle, Logout } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Person2Icon from '@mui/icons-material/Person2';
@@ -22,38 +19,6 @@ export function Topnav() {
     SessionService.logout();
     userStore.set(null);
     navigate('/login');
-  };
-
-  const handleInviteSubmit = async (data: InviteFormData) => {
-    try {
-      await InviteApiService.inviteToAccount({ emails: data.emails });
-      appStore.closeModal();
-      appStore.setAlert({
-        message: `Invitation${
-          data.emails.length > 1 ? 's' : ''
-        } sent to ${data.emails.join(', ')}`,
-        type: 'success' as AlertType,
-      });
-    } catch (err) {
-      console.error('Failed to send invitations:', err);
-      appStore.setAlert({
-        message: 'Failed to send invitations. Please try again.',
-        type: AlertType.ERROR,
-      });
-    }
-  };
-
-  const openInviteDialog = () => {
-    appStore.openModal({
-      title: 'Invite User',
-      content: (
-        <Invite
-          onSubmit={handleInviteSubmit}
-          onCancel={() => appStore.closeModal()}
-        />
-      ),
-      disableCloseOnClickOutside: true,
-    });
   };
 
   const menuItems: MenuItem[] = [
@@ -75,7 +40,7 @@ export function Topnav() {
 
   const toggleSidebar = () => {
     appStore.setSidebarContent(
-      getSidebarConfig(openInviteDialog, () => navigate('/patients'))
+      getSidebarConfig(navigate)
     );
     appStore.toggleSidebar();
   };
