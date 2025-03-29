@@ -4,6 +4,7 @@ import {
   TextField,
   Typography,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { Tags, type Tag } from '@caretaker/caretaker-ui';
 import styles from './invite.module.scss';
@@ -17,9 +18,10 @@ export interface InviteProps {
   onSubmit: (data: InviteFormData) => void;
   onCancel?: () => void;
   className?: string;
+  isSubmitting?: boolean;
 }
 
-export function Invite({ onSubmit, onCancel, className }: InviteProps) {
+export function Invite({ onSubmit, onCancel, className, isSubmitting = false }: InviteProps) {
   const [currentEmail, setCurrentEmail] = useState('');
   const [emailTags, setEmailTags] = useState<Tag[]>([]);
   const [error, setError] = useState<string | undefined>();
@@ -92,6 +94,7 @@ export function Invite({ onSubmit, onCancel, className }: InviteProps) {
         margin="normal"
         placeholder="Type an email and press Enter to add"
         className={clsx(styles.formField, 'MuiTextField-root')}
+        disabled={isSubmitting}
       />
 
       {emailTags.length > 0 && (
@@ -111,6 +114,7 @@ export function Invite({ onSubmit, onCancel, className }: InviteProps) {
             onClick={onCancel}
             variant="text"
             className={clsx(styles.cancelButton, 'MuiButton-root')}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -119,10 +123,11 @@ export function Invite({ onSubmit, onCancel, className }: InviteProps) {
           type="submit"
           variant="contained"
           color="primary"
-          disabled={emailTags.length === 0}
+          disabled={emailTags.length === 0 || isSubmitting}
           className={clsx(styles.submitButton, 'MuiButton-root')}
+          startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : undefined}
         >
-          Send Invitations
+          {isSubmitting ? 'Sending...' : 'Send Invitations'}
         </Button>
       </Box>
     </Box>

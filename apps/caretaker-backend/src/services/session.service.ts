@@ -5,6 +5,7 @@ import { isNonEmptyString } from '../utils/string.utils';
 import { SESSION_CACHE_EXPIRATION_TIME, SessionCacheService } from './session-cache.service';
 import { UserNotFoundError } from '../routes/user/user.erros';
 import { QueryFailedError } from 'typeorm';
+import { AccountNotFoundError } from '../entities/errors/account-entitiy-errors';
 
 export type SessionTokenPayload = Pick<
   UserRecord,
@@ -31,6 +32,7 @@ class SessionService {
     const existingSessionToken = await SessionCacheService.getSessionToken(userId);
     if (existingSessionToken) {
       if (!this.isExpiredToken(existingSessionToken)) {
+        // TODO: Create a new session with new expiration time and return the new token
         return existingSessionToken;
       }
       await this.clearSession(userId);
@@ -38,6 +40,9 @@ class SessionService {
 
     try {
       const user = await UserController.getById(userId);
+      if (!user.account) {
+        throw new AccountNotFoundError();
+      }
       const tokenPayload = {
         ...user,
         iat: Date.now(),
@@ -50,6 +55,9 @@ class SessionService {
       return sessionToken;
     } catch (err) {
       console.log(err);
+      if (err instanceof AccountNotFoundError) {
+        throw new AccountNotFoundError(err);
+      }
       throw new UserNotFoundError(err as QueryFailedError);
     }
   }
