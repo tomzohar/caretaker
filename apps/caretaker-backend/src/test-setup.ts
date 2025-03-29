@@ -9,6 +9,8 @@ const mockRedisClient = {
   disconnect: jest.fn<() => Promise<'OK'>>(() => Promise.resolve('OK')),
   get: jest.fn<(key: string) => Promise<string | null>>(() => Promise.resolve(null)),
   set: jest.fn<(key: string, value: string) => Promise<'OK'>>(() => Promise.resolve('OK')),
+  del: jest.fn<(key: string) => Promise<number>>(() => Promise.resolve(1)),
+  setEx: jest.fn<(key: string, seconds: number, value: string) => Promise<'OK'>>(() => Promise.resolve('OK')),
 } as unknown as Redis;
 
 jest.mock('./cache/redis-client', () => ({
