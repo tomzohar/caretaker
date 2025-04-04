@@ -45,7 +45,7 @@ export class InvitationCleanupService {
 
     try {
       // First, mark recently expired invitations as 'expired'
-      const updated = await repo.update(
+      await repo.update(
         {
           status: 'pending',
           expiresAt: LessThan(new Date()),
@@ -54,17 +54,13 @@ export class InvitationCleanupService {
       );
 
       // Then, soft delete old expired invitations
-      const deleted = await repo.update(
+      await repo.update(
         {
           status: 'expired',
           updatedAt: LessThan(retentionDate),
           deletedAt: null,
         },
         { deletedAt: new Date() }
-      );
-
-      console.log(
-        `Invitation cleanup completed: ${updated.affected} marked as expired, ${deleted.affected} soft deleted`
       );
     } catch (error) {
       console.error('Error during invitation cleanup:', error);
@@ -74,6 +70,7 @@ export class InvitationCleanupService {
 
   // For manual cleanup or testing
   public static async runCleanupNow(): Promise<void> {
-    await this.cleanupExpiredInvitations();
+    console.log('HERE');
+    return await InvitationCleanupService.cleanupExpiredInvitations();
   }
 }
