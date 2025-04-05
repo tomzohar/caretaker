@@ -26,9 +26,10 @@ resource "aws_iam_user_policy" "build_process_ecr" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:UpdateService"
+          "ecs:UpdateService",
+          "ecs:DescribeServices"
         ]
-        Resource = "arn:aws:ecs:us-east-1:127214163285:service/${var.environment}/caretaker-backend"
+        Resource = "arn:aws:ecs:us-east-1:127214163285:service/caretaker-cluster/caretaker-backend"
       }
     ]
   })
