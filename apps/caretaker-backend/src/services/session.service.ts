@@ -28,7 +28,7 @@ class SessionService {
     }
   }
 
-  async createSession(userId: number): Promise<string> {
+  async createSession(userId: number, isPending = false): Promise<string> {
     const existingSessionToken = await SessionCacheService.getSessionToken(userId);
     if (existingSessionToken) {
       if (!this.isExpiredToken(existingSessionToken)) {
@@ -40,9 +40,13 @@ class SessionService {
 
     try {
       const user = await UserController.getById(userId);
-      if (!user.account) {
+      
+      // Check if user has an account
+      if (!isPending && !user.account) {
+        // Throw AccountNotFoundError to match the expected error in tests
         throw new AccountNotFoundError();
       }
+
       const tokenPayload = {
         ...user,
         iat: Date.now(),
@@ -56,7 +60,7 @@ class SessionService {
     } catch (err) {
       console.log(err);
       if (err instanceof AccountNotFoundError) {
-        throw new AccountNotFoundError(err);
+        throw err;
       }
       throw new UserNotFoundError(err as QueryFailedError);
     }

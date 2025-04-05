@@ -51,6 +51,10 @@ resource "aws_ecs_task_definition" "caretaker_task" {
           value = "3333"
         },
         {
+          name  = "NODE_ENV"
+          value = "production"
+        },
+        {
           name  = "DATABASE_URL"
           value = "postgresql://${var.db_username}:${var.db_password}@${aws_db_instance.postgres.endpoint}/caretaker"
         },
@@ -67,6 +71,16 @@ resource "aws_ecs_task_definition" "caretaker_task" {
         {
           name      = "JWT_SECRET"
           valueFrom = aws_secretsmanager_secret.jwt_secret.arn
+        }
+      ]
+      secrets = [
+        {
+          name      = "SIGNUP_TOKEN_SECRET"
+          valueFrom = aws_secretsmanager_secret.signup_token_secret.arn
+        },
+        {
+          name      = "SESSION_TOKEN_SECRET"
+          valueFrom = aws_secretsmanager_secret.session_token_secret.arn
         }
       ]
       logConfiguration = {
@@ -147,6 +161,46 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# IAM role for ECS tasks to access AWS services
+resource "aws_iam_role" "ecs_task_role" {
+  name = "caretaker-ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Policy to allow ECS tasks to access Secrets Manager
+resource "aws_iam_role_policy" "ecs_task_secrets_policy" {
+  name = "secrets-access"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          aws_secretsmanager_secret.signup_token_secret.arn,
+          aws_secretsmanager_secret.session_token_secret.arn
+        ]
+      }
+    ]
+  })
 }
 
 resource "aws_ecs_service" "backend" {

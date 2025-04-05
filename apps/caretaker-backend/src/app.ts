@@ -7,6 +7,9 @@ import {logRequestMiddleware} from "./routes/middleware";
 import { InvitationCleanupService } from "./services";
 
 const isProd = process.env.NODE_ENV === 'production';
+const allowedOrigins = isProd 
+  ? ['https://caretaker.center', 'https://www.caretaker.center', 'https://api.caretaker.center']
+  : ['http://localhost:4200', 'http://localhost:4300'];
 
 async function initDB() {
     try {
@@ -19,10 +22,21 @@ async function initDB() {
 
 async function initApp() {
     const app = express();
+    
+    // Log all incoming requests and their origin
+    app.use((req, res, next) => {
+        console.log('Incoming request:', {
+            origin: req.headers.origin,
+            method: req.method,
+            path: req.path,
+            headers: req.headers
+        });
+        next();
+    });
 
-    // Single CORS configuration
+    // Configure CORS
     app.use(cors({
-        origin: 'https://caretaker.center',
+        origin: true, // Allow all origins
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowedHeaders: [
             'Content-Type',
@@ -36,20 +50,8 @@ async function initApp() {
         optionsSuccessStatus: 204
     }));
     
-    // Request logging
-    app.use((req, res, next) => {
-        console.log('Request:', {
-            method: req.method,
-            path: req.path,
-            origin: req.headers.origin,
-            headers: req.headers
-        });
-        next();
-    });
-
     app.use(express.json());
     app.use(logRequestMiddleware);
-    
     app.use(router);
 
     await initDB();

@@ -18,6 +18,8 @@ export function fetchWrapper<R>({ url, method, headers, body }: FetchParams): Pr
     throw new Error('Invalid url, urls must start with /api');
   }
   const apiUrl = url.replace('/api', environment.apiUrl);
+  console.log('Making request to:', apiUrl, { method, body });
+  
   return fetch(apiUrl, {
     method,
     headers: {
@@ -31,7 +33,7 @@ export function fetchWrapper<R>({ url, method, headers, body }: FetchParams): Pr
     const json = await response.json();
     if ('error' in json || response.status.toString().startsWith('4')) {
       throw new Error(`Http Error \nstatus: ${response.status}\nmessage: ${json.error}`);
-    }
-    return json;
-  }) as Promise<R>;
+      }
+      return json;
+    }) as Promise<R>;
 }
