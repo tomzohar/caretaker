@@ -1,3 +1,24 @@
+# ECS Configuration for Caretaker Backend
+#
+# This file defines the ECS cluster and service configurations for the Caretaker backend application.
+# 
+# Resources:
+# - ECS Cluster: Fargate cluster for running containerized applications
+# - ECS Task Definition: Container configuration and resource requirements
+# - ECS Service: Service configuration including desired count and networking
+#
+# Dependencies:
+# - VPC and subnets (main.tf)
+# - Security groups (security.tf)
+# - Load balancer target group (alb.tf)
+# - ECR repository (ecr.tf)
+#
+# Last Updated: 2024-04-05
+# Changes:
+# - Added health check configuration
+# - Updated container port to 3333
+# - Added CloudWatch logging
+
 resource "aws_ecs_cluster" "caretaker_cluster" {
   name = "caretaker-cluster"
   tags = {
