@@ -8,6 +8,7 @@ on:
       - 'apps/caretaker-backend/**'
       - 'Dockerfile'
       - '.github/workflows/deploy-backend.yml'
+      - 'scripts/deploy-backend.sh'
   workflow_dispatch:
     inputs:
       reason:
@@ -48,24 +49,19 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install NX
-        run: npm install -g nx
-
       - name: Install dependencies
         run: npm install
 
-      - name: Build and push Docker image
+      - name: Make deploy script executable
+        run: chmod +x ./scripts/deploy-backend.sh
+
+      - name: Deploy to ECS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          ECS_CLUSTER: ${{ env.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ env.ECS_SERVICE }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
-      - name: Force new ECS deployment
-        run: |
-          aws ecs update-service --cluster $ECS_CLUSTER \
-                                --service $ECS_SERVICE \
-                                --force-new-deployment 
+          ./scripts/deploy-backend.sh --tag $IMAGE_TAG 
