@@ -24,6 +24,7 @@ export function fetchWrapper<R>({ url, method, headers, body }: FetchParams): Pr
       ...getBaseHeaders(),
       ...headers
     },
+    credentials: 'include',
     body: JSON.stringify(body),
   })
     .then(async response => {

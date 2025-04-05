@@ -20,7 +20,7 @@ async function initDB() {
 async function initApp() {
     const app = express();
 
-    // CORS must be first
+    // Single CORS configuration
     app.use(cors({
         origin: 'https://caretaker.center',
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -31,10 +31,12 @@ async function initApp() {
             'Accept',
             'X-Requested-With'
         ],
-        credentials: true
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
     }));
     
-    // Request logging after CORS
+    // Request logging
     app.use((req, res, next) => {
         console.log('Request:', {
             method: req.method,
@@ -48,15 +50,6 @@ async function initApp() {
     app.use(express.json());
     app.use(logRequestMiddleware);
     
-    // Apply CORS headers again before sending response
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', 'https://caretaker.center');
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept, X-Requested-With');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        next();
-    });
-
     app.use(router);
 
     await initDB();
