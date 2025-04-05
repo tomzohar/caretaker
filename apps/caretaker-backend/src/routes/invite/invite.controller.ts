@@ -38,7 +38,6 @@ export class InviteController {
 
     // TODO: Implement invitation creation
     // This will:
-    // DONE - 1. Create invitation records in the database
     // 2. Send invitation emails to the provided addresses
     // 3. Handle duplicate invitations and validation
 
