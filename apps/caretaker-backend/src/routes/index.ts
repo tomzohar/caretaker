@@ -16,7 +16,7 @@ const router = Router();
 // Root route
 router.get('/', (req, res) => {
     res.json({
-        message: 'Welcome to Caretaker API',
+        message: 'Caretaker API',
         version: '1.0.0',
         status: 'running'
     });
