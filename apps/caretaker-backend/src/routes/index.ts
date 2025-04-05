@@ -13,6 +13,15 @@ import {authenticationMiddleware} from "./middleware";
 
 const router = Router();
 
+// Root route
+router.get('/', (req, res) => {
+    res.json({
+        message: 'Welcome to Caretaker API',
+        version: '1.0.0',
+        status: 'running'
+    });
+});
+
 router.use('/health', HealthRoutes);
 router.use('/signup', SignupRoutes);
 router.use('/login', LoginRoutes);
