@@ -1,5 +1,6 @@
 import { FetchParams } from '../types/fetch-params.interface';
 import { BASE_HEADERS } from '../const/base-headers';
+import { environment } from '../config/environment';
 
 function getBaseHeaders(): Record<string, string> {
   const authHeaders: Record<string, string> = {};
@@ -16,7 +17,7 @@ export function fetchWrapper<R>({ url, method, headers, body }: FetchParams): Pr
   if (!url.includes('/api')) {
     throw new Error('Invalid url, urls must start with /api');
   }
-  const apiUrl = url.replace('/api', 'http://localhost:3333');
+  const apiUrl = url.replace('/api', environment.apiUrl);
   return fetch(apiUrl, {
     method,
     headers: {
