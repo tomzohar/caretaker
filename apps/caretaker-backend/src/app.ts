@@ -8,7 +8,7 @@ import { InvitationCleanupService } from "./services";
 
 const isProd = process.env.NODE_ENV === 'production';
 const allowedOrigins = isProd 
-  ? ['https://caretaker.center']
+  ? ['https://caretaker.center', 'https://www.caretaker.center']
   : ['http://localhost:4200', 'http://localhost:4300'];
 
 async function initDB() {
@@ -37,7 +37,23 @@ async function initApp() {
             return callback(null, true);
         },
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'DNT',
+            'User-Agent',
+            'X-Requested-With',
+            'If-Modified-Since',
+            'Cache-Control',
+            'Content-Type',
+            'Accept',
+            'Origin',
+            'Referer',
+            'sec-ch-ua',
+            'sec-ch-ua-mobile',
+            'sec-ch-ua-platform'
+        ],
+        exposedHeaders: ['Content-Length', 'Content-Type'],
         credentials: true,
         maxAge: 86400 // 24 hours
     }));
