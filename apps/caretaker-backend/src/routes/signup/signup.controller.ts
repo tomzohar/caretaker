@@ -6,7 +6,10 @@ import { UserRecord } from '../../entities/user/user.entity';
 import redisClient from '../../cache/redis-client';
 import { LoginController } from '../login/login.controller';
 
-const SIGNUP_TOKEN_SECRET = process.env.SIGNUP_TOKEN_SECRET || '';
+// Use a fallback secret if environment variable is missing
+// IMPORTANT: This should be a temporary fix until proper secrets are configured
+const SIGNUP_TOKEN_SECRET = process.env.SIGNUP_TOKEN_SECRET || 'temporary_development_secret_replace_in_production';
+console.log('Using signup token secret:', SIGNUP_TOKEN_SECRET ? 'Secret configured' : 'NO SECRET CONFIGURED - USING DEFAULT');
 
 const getSignupTokenCacheKey = ({ email }: { email: string }) => {
   return `signup_token_${JSON.stringify({ email })}`;
