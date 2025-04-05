@@ -17,13 +17,13 @@ variable "vpc_cidr" {
 }
 
 variable "db_username" {
-  description = "Username for the RDS instance"
+  description = "Database username"
   type        = string
   sensitive   = true
 }
 
 variable "db_password" {
-  description = "Password for the RDS instance"
+  description = "Database password"
   type        = string
   sensitive   = true
 }
@@ -44,4 +44,10 @@ variable "api_domain_name" {
   description = "Domain name for the API"
   type        = string
   default     = "api.caretaker.center"
+}
+
+variable "jwt_secret" {
+  description = "Secret key for JWT signing"
+  type        = string
+  sensitive   = true
 } 

@@ -11,7 +11,10 @@
     "console": "ts-node apps/caretaker-backend/src/repl-init.ts",
     "test": "nx run-many --target=test --all",
     "lint": "nx run-many --target=lint --all",
-    "build": "nx run-many --target=build --all"
+    "build": "nx run-many --target=build --all",
+    "deploy:backend": "./scripts/deploy-backend.sh",
+    "deploy:frontend": "./scripts/deploy-frontend.sh",
+    "check:backend": "./scripts/check-deployment.sh"
   },
   "private": true,
   "dependencies": {

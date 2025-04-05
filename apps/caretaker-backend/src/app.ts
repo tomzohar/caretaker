@@ -7,9 +7,6 @@ import {logRequestMiddleware} from "./routes/middleware";
 import { InvitationCleanupService } from "./services";
 
 const isProd = process.env.NODE_ENV === 'production';
-const allowedOrigins = isProd 
-  ? ['https://caretaker.center', 'https://www.caretaker.center']
-  : ['http://localhost:4200', 'http://localhost:4300'];
 
 async function initDB() {
     try {
@@ -22,26 +19,37 @@ async function initDB() {
 
 async function initApp() {
     const app = express();
+
+    // Single CORS configuration
+    app.use(cors({
+        origin: 'https://caretaker.center',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Origin',
+            'Accept',
+            'X-Requested-With'
+        ],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
+    }));
     
-    // Log all incoming requests and their origin
+    // Request logging
     app.use((req, res, next) => {
-        console.log('Incoming request:', {
-            origin: req.headers.origin,
+        console.log('Request:', {
             method: req.method,
-            path: req.path
+            path: req.path,
+            origin: req.headers.origin,
+            headers: req.headers
         });
         next();
     });
 
-    app.use(cors({
-        origin: true, // Allow all origins during debugging
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-        allowedHeaders: '*', // Allow all headers during debugging
-        credentials: true
-    }));
-    
     app.use(express.json());
     app.use(logRequestMiddleware);
+    
     app.use(router);
 
     await initDB();

@@ -1,3 +1,24 @@
+# ECS Configuration for Caretaker Backend
+#
+# This file defines the ECS cluster and service configurations for the Caretaker backend application.
+# 
+# Resources:
+# - ECS Cluster: Fargate cluster for running containerized applications
+# - ECS Task Definition: Container configuration and resource requirements
+# - ECS Service: Service configuration including desired count and networking
+#
+# Dependencies:
+# - VPC and subnets (main.tf)
+# - Security groups (security.tf)
+# - Load balancer target group (alb.tf)
+# - ECR repository (ecr.tf)
+#
+# Last Updated: 2024-04-05
+# Changes:
+# - Added health check configuration
+# - Updated container port to 3333
+# - Added CloudWatch logging
+
 resource "aws_ecs_cluster" "caretaker_cluster" {
   name = "caretaker-cluster"
   tags = {
@@ -12,6 +33,7 @@ resource "aws_ecs_task_definition" "caretaker_task" {
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn           = aws_iam_role.ecs_task_role.arn
   container_definitions    = jsonencode([
     {
       name      = "caretaker-backend"
@@ -35,6 +57,16 @@ resource "aws_ecs_task_definition" "caretaker_task" {
         {
           name  = "REDIS_URL"
           value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.cache_nodes[0].port}"
+        },
+        {
+          name  = "NODE_ENV"
+          value = "production"
+        }
+      ]
+      secrets = [
+        {
+          name      = "JWT_SECRET"
+          valueFrom = aws_secretsmanager_secret.jwt_secret.arn
         }
       ]
       logConfiguration = {
@@ -50,6 +82,45 @@ resource "aws_ecs_task_definition" "caretaker_task" {
   tags = {
     Name = "caretaker-task"
   }
+}
+
+# IAM role for ECS tasks to access AWS services
+resource "aws_iam_role" "ecs_task_role" {
+  name = "caretaker-ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Policy to allow ECS tasks to access Secrets Manager
+resource "aws_iam_role_policy" "ecs_task_secrets_policy" {
+  name = "secrets-access"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          aws_secretsmanager_secret.jwt_secret.arn
+        ]
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {

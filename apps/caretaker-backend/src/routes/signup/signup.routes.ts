@@ -5,6 +5,11 @@ import { UserNotFoundError } from '../user/user.erros';
 
 const router = Router();
 
+// Handle preflight requests
+router.options('/email', (req, res) => {
+  res.status(200).end();
+});
+
 router.post('/email', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -26,8 +31,12 @@ router.post('/email', async (req, res) => {
     if (err instanceof UserNotFoundError) {
       return res.status(200).json({ token });
     }
-    res.status(400).json({ error: (<Error>err).message });
+    res.status(400).json({ error: (err as Error).message });
   }
+});
+
+router.options('/complete', (req, res) => {
+  res.status(200).end();
 });
 
 router.post('/complete', async (req, res: Response) => {
@@ -37,11 +46,14 @@ router.post('/complete', async (req, res: Response) => {
       token,
       name,
     });
-    // const sessionToken = await SessionService.createSession(user.id as number);
-    res.cookie('sessionToken', sessionToken, { httpOnly: true });
+    res.cookie('sessionToken', sessionToken, { 
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    });
     res.status(201).json({ user, token: sessionToken });
   } catch (err) {
-    res.status(400).json({ error: (<Error>err).message });
+    res.status(400).json({ error: (err as Error).message });
   }
 });
 
