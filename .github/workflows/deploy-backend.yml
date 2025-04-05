@@ -8,6 +8,13 @@ on:
       - 'apps/caretaker-backend/**'
       - 'Dockerfile'
       - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deployment'
+        required: false
+        type: string
+        default: 'Manual deployment triggered'
 
 env:
   AWS_REGION: us-east-1
