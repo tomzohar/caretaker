@@ -7,7 +7,7 @@ const router = Router();
 router.post('/email', async (req, res) => {
     try {
         const {email, password} = req.body;
-        const result = await LoginController.login(email, password);
+        const result = await LoginController.login(email, password, false);
     
         res.status(200).json(result);
     } catch (e) {

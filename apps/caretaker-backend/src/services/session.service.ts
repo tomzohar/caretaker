@@ -5,7 +5,13 @@ import { isNonEmptyString } from '../utils/string.utils';
 import { SESSION_CACHE_EXPIRATION_TIME, SessionCacheService } from './session-cache.service';
 import { UserNotFoundError } from '../routes/user/user.erros';
 import { QueryFailedError } from 'typeorm';
-import { AccountNotFoundError } from '../entities/errors/account-entitiy-errors';
+
+export class PendingAccountError extends Error {
+  constructor(userId: number) {
+    super(`User ${userId} needs to be associated with an account before logging in`);
+    this.name = 'PendingAccountError';
+  }
+}
 
 export type SessionTokenPayload = Pick<
   UserRecord,
@@ -28,7 +34,7 @@ class SessionService {
     }
   }
 
-  async createSession(userId: number): Promise<string> {
+  async createSession(userId: number, isPending = false): Promise<string> {
     const existingSessionToken = await SessionCacheService.getSessionToken(userId);
     if (existingSessionToken) {
       if (!this.isExpiredToken(existingSessionToken)) {
@@ -40,9 +46,12 @@ class SessionService {
 
     try {
       const user = await UserController.getById(userId);
-      if (!user.account) {
-        throw new AccountNotFoundError();
+      
+      // Check if user has an account
+      if (!isPending && !user.account) {
+        throw new PendingAccountError(userId);
       }
+
       const tokenPayload = {
         ...user,
         iat: Date.now(),
@@ -55,8 +64,8 @@ class SessionService {
       return sessionToken;
     } catch (err) {
       console.log(err);
-      if (err instanceof AccountNotFoundError) {
-        throw new AccountNotFoundError(err);
+      if (err instanceof PendingAccountError) {
+        throw err;
       }
       throw new UserNotFoundError(err as QueryFailedError);
     }

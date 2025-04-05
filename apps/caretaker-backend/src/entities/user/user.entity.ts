@@ -32,8 +32,8 @@ export class UserRecord implements User {
     @OneToMany(() => PatientRecord, patient => patient.guardian)
     patients: PatientRecord[];
 
-    @ManyToOne(() => AccountRecord, account => account.users)
-    account: Account;
+    @ManyToOne(() => AccountRecord, account => account.users, { nullable: true })
+    account: Account | null;
 
     @CreateDateColumn()
     createdAt: string;

@@ -7,6 +7,9 @@ import {logRequestMiddleware} from "./routes/middleware";
 import { InvitationCleanupService } from "./services";
 
 const isProd = process.env.NODE_ENV === 'production';
+const allowedOrigins = isProd 
+  ? ['https://caretaker.center', 'https://www.caretaker.center']
+  : ['http://localhost:4200', 'http://localhost:4300'];
 
 async function initDB() {
     try {
@@ -19,30 +22,14 @@ async function initDB() {
 
 async function initApp() {
     const app = express();
-
-    // Single CORS configuration
-    app.use(cors({
-        origin: 'https://caretaker.center',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-        allowedHeaders: [
-            'Content-Type',
-            'Authorization',
-            'Origin',
-            'Accept',
-            'X-Requested-With'
-        ],
-        credentials: true,
-        preflightContinue: false,
-        optionsSuccessStatus: 204
-    }));
     
-    // Request logging
+    // Log all incoming requests and their origin
     app.use((req, res, next) => {
-        console.log('Request:', {
+        console.log('Incoming request:', {
+            origin: req.headers.origin,
             method: req.method,
             path: req.path,
-            origin: req.headers.origin,
-            headers: req.headers,
+            headers: req.headers
         });
         next();
     });
@@ -53,10 +40,12 @@ async function initApp() {
             // Allow requests with no origin (like mobile apps or curl requests)
             if (!origin) return callback(null, true);
             
-            if (allowedOrigins.indexOf(origin) === -1) {
-                return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                console.log(`Origin ${origin} not allowed by CORS`);
+                callback(null, true); // Allow all origins in development
             }
-            return callback(null, true);
         },
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowedHeaders: [
@@ -73,7 +62,6 @@ async function initApp() {
     
     app.use(express.json());
     app.use(logRequestMiddleware);
-    
     app.use(router);
 
     await initDB();

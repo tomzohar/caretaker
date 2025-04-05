@@ -1,11 +1,11 @@
 import * as bcrypt from 'bcrypt';
 import UserController from "../user/user.controller";
 import {UserLoginFailed, UserNotFoundError} from "../user/user.erros";
-import SessionService from "../../services/session.service";
+import SessionService, { PendingAccountError } from "../../services/session.service";
 import { UserRecord } from '../../entities/user/user.entity';
 
 export class LoginController {
-    static async login(email: string, password: string): Promise<{ token: string, user: UserRecord }> {
+    static async login(email: string, password: string, isPending?: boolean): Promise<{ token: string, user: UserRecord, isPending?: boolean }> {
         const user = await UserController.findByEmail(email, {password: true});
         if (!user) {
             throw new UserNotFoundError();
@@ -19,7 +19,19 @@ export class LoginController {
         const userToSend = Object.assign({}, user);
         delete userToSend.password;
 
-        const sessionToken = await SessionService.createSession(user?.id as number);
-        return {token: sessionToken, user: userToSend};
+        try {
+            const sessionToken = await SessionService.createSession(user?.id as number, isPending);
+            return {token: sessionToken, user: userToSend};
+        } catch (err) {
+            if (err instanceof PendingAccountError) {
+                // Return a special response for pending users
+                return {
+                    token: '', // No session token for pending users
+                    user: userToSend,
+                    isPending: true
+                };
+            }
+            throw err;
+        }
     }
 }
