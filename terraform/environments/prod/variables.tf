@@ -46,8 +46,14 @@ variable "api_domain_name" {
   default     = "api.caretaker.center"
 }
 
-variable "jwt_secret" {
-  description = "Secret key for JWT signing"
+variable "signup_token_secret" {
+  description = "Secret key for signup JWT signing"
+  type        = string
+  sensitive   = true
+}
+
+variable "session_token_secret" {
+  description = "Secret key for session JWT signing"
   type        = string
   sensitive   = true
 } 

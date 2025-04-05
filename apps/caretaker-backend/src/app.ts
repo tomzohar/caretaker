@@ -42,11 +42,35 @@ async function initApp() {
             method: req.method,
             path: req.path,
             origin: req.headers.origin,
-            headers: req.headers
+            headers: req.headers,
         });
         next();
     });
 
+    // Configure CORS
+    app.use(cors({
+        origin: (origin, callback) => {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
+            
+            if (allowedOrigins.indexOf(origin) === -1) {
+                return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+            }
+            return callback(null, true);
+        },
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Origin',
+            'Accept',
+            'X-Requested-With'
+        ],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
+    }));
+    
     app.use(express.json());
     app.use(logRequestMiddleware);
     
