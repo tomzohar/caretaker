@@ -4,7 +4,7 @@ A full-stack application for managing caretaker services.
 
 ## Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v20 or higher)
 - nvm (Node Version Manager)
 - Docker and Docker Compose
 - npm (comes with Node.js)
@@ -25,8 +25,8 @@ A full-stack application for managing caretaker services.
 
 3. Install and use the correct Node.js version:
    ```bash
-   nvm install 18
-   nvm use 18
+   nvm install 20
+   nvm use 20
    ```
 
 4. Install dependencies:
