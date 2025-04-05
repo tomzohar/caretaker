@@ -23,39 +23,21 @@ async function initDB() {
 async function initApp() {
     const app = express();
     
+    // Log all incoming requests and their origin
+    app.use((req, res, next) => {
+        console.log('Incoming request:', {
+            origin: req.headers.origin,
+            method: req.method,
+            path: req.path
+        });
+        next();
+    });
+
     app.use(cors({
-        origin: (origin, callback) => {
-            // Allow requests with no origin (like mobile apps or curl requests)
-            if (!origin) {
-                return callback(null, true);
-            }
-            
-            if (allowedOrigins.indexOf(origin) === -1) {
-                const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
-                return callback(new Error(msg), false);
-            }
-            return callback(null, true);
-        },
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: [
-            'Content-Type',
-            'Authorization',
-            'DNT',
-            'User-Agent',
-            'X-Requested-With',
-            'If-Modified-Since',
-            'Cache-Control',
-            'Content-Type',
-            'Accept',
-            'Origin',
-            'Referer',
-            'sec-ch-ua',
-            'sec-ch-ua-mobile',
-            'sec-ch-ua-platform'
-        ],
-        exposedHeaders: ['Content-Length', 'Content-Type'],
-        credentials: true,
-        maxAge: 86400 // 24 hours
+        origin: true, // Allow all origins during debugging
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+        allowedHeaders: '*', // Allow all headers during debugging
+        credentials: true
     }));
     
     app.use(express.json());
