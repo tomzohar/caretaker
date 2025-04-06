@@ -93,6 +93,19 @@ Build all projects:
 npm run build
 ```
 
+## Deployment
+
+The project uses GitHub Actions for CI/CD pipeline:
+
+- Continuous Integration runs on every pull request and push to main (lint, test, build)
+- Frontend deployment to AWS S3/CloudFront happens automatically on pushes to main branch
+- Manual deployment can be triggered using the deployment scripts in the `scripts/` directory
+
+To deploy the frontend manually:
+```bash
+bash scripts/deploy-frontend.sh
+```
+
 ## Contributing
 
 1. Create a new branch for your feature
