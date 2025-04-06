@@ -5,12 +5,17 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   actions: read
   contents: read
   checks: write
-  pull-requests: write  # Add permission for PR status updates
+  pull-requests: write
+  issues: read
+  statuses: write
 
 jobs:
   lint:
@@ -24,7 +29,7 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm install
+      - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
       - run: npx nx affected -t lint
 
@@ -39,7 +44,7 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm install
+      - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
       - run: npx nx affected -t test
 
@@ -54,15 +59,48 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm install
+      - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
       - run: npx nx affected -t build
 
+  check-affected:
+    name: Check Affected Apps
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, test, build]
+    outputs:
+      deploy_frontend: ${{ steps.check.outputs.DEPLOY_FRONTEND }}
+      deploy_backend: ${{ steps.check.outputs.DEPLOY_BACKEND }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - uses: nrwl/nx-set-shas@v4
+      - name: Check affected apps
+        id: check
+        run: |
+          chmod +x ./scripts/check-affected.sh
+          # Set base commit for proper comparison
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            export GITHUB_BASE_REF="${{ github.base_ref }}"
+          else
+            # For pushes to main, compare with the previous commit
+            git fetch --depth=2 origin main
+            export NX_BASE="HEAD~1"
+            export NX_HEAD="HEAD"
+          fi
+          ./scripts/check-affected.sh
+
   deploy-frontend:
     name: Deploy Frontend
+    needs: [check-affected]
+    if: needs.check-affected.outputs.deploy_frontend == 'true'
     runs-on: ubuntu-latest
-    needs: [lint, test, build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,10 +113,42 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - run: npm install
+      - run: npm ci --legacy-peer-deps
       - name: Deploy Frontend
         run: bash scripts/deploy-frontend.sh
         env:
           AWS_CARETAKER_CLIENT_BUCKET_NAME: ${{ secrets.AWS_CARETAKER_CLIENT_BUCKET_NAME }}
           AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
 
+  deploy-backend:
+    name: Deploy Backend
+    needs: [check-affected]
+    if: needs.check-affected.outputs.deploy_backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - run: npm ci --legacy-peer-deps
+      - name: Deploy Backend
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: us-east-1
+          ECR_REPOSITORY: caretaker-backend
+          ECS_CLUSTER: caretaker-cluster
+          ECS_SERVICE: caretaker-backend
+        run: |
+          chmod +x ./scripts/deploy-backend.sh
+          ./scripts/deploy-backend.sh --tag $IMAGE_TAG
