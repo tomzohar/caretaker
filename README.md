@@ -95,15 +95,27 @@ npm run build
 
 ## Deployment
 
-The project uses GitHub Actions for CI/CD pipeline:
+The project uses GitHub Actions for CI/CD pipeline with Nx affected detection:
 
 - Continuous Integration runs on every pull request and push to main (lint, test, build)
-- Frontend deployment to AWS S3/CloudFront happens automatically on pushes to main branch
-- Manual deployment can be triggered using the deployment scripts in the `scripts/` directory
+- Deployments are automatically triggered based on the Nx dependency graph analysis
+- The system uses `nx affected:apps` to determine which applications should be deployed
+- Deployments can also be triggered manually via the GitHub Actions interface
 
-To deploy the frontend manually:
+The deployment process follows these steps:
+1. Runs the `check-affected.sh` script to determine which apps are affected by changes
+2. Conditionally deploys the frontend to AWS S3/CloudFront if frontend app is affected
+3. Conditionally deploys the backend to AWS ECS if backend app is affected
+
+This approach ensures that only the necessary deployments run based on what has actually changed according to the Nx dependency graph, making the CI/CD pipeline more efficient.
+
+To deploy manually:
 ```bash
+# Frontend deployment
 bash scripts/deploy-frontend.sh
+
+# Backend deployment
+bash scripts/deploy-backend.sh --tag <image-tag>
 ```
 
 ## Contributing
