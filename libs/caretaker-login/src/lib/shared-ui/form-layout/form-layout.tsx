@@ -53,7 +53,7 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
     setErrors((prev) => ({ ...prev, [id]: error }));
   };
 
-  const renderFormItem = (item: FormItem<keyof T>) => {
+  const renderFormItem = (item: Form<T>['items'][number]) => {
     const showError = touched[item.id] && !!errors[item.id];
     return formItemRenderers[item.type]({
       onChange: (e) => {
@@ -64,6 +64,9 @@ export function FormLayout<T extends Record<string, unknown>>(props: Form<T>) {
         if (touched[item.id]) {
           const error = validateField(item.id, newValue);
           setErrors((prev) => ({ ...prev, [item.id]: error }));
+        }
+        if (item.onChange) {
+          item.onChange(newValue, formState);
         }
       },
       onBlur: () => handleBlur(item.id),

@@ -6,3 +6,4 @@ export * from './lib/store/user-store/user-store';
 export * from './lib/services/session.service';
 export * from './lib/services/account-api.service';
 export * from './lib/hooks/useCreateAccount';
+export * from './lib/hooks/useAccountActions';
