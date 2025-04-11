@@ -59,7 +59,6 @@ export const AccountDetails = observer(
     };
 
     const handleContinueWithNewAccount = (accountName: string) => {
-      console.log('handleContinueWithNewAccount', accountName);
       handleCreateAccount(accountName);
     };
 
