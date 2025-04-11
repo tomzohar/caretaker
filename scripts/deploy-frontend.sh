@@ -86,7 +86,7 @@ fi
 # Deploy to S3
 if [ "$BUILD_ONLY" != "true" ]; then
     echo "📤 Deploying to S3..."
-    aws s3 sync dist/apps/caretaker-client "s3://$AWS_CARETAKER_CLIENT_BUCKET_NAME" --delete
+    aws s3 sync dist/apps/caretaker-client "s3://$AWS_CARETAKER_CLIENT_BUCKET_NAME"
     
     # Invalidate CloudFront cache
     if [ "$SKIP_INVALIDATION" != "true" ]; then
