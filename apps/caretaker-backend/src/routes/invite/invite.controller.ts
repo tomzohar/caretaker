@@ -17,6 +17,10 @@ export class InviteController {
         },
       });
 
+      if (!user.account) {
+        throw new AccountNotFoundError();
+      }
+
       InviteController.validateInviterUser(user);
       const invitations = await Promise.all(emails.map((email) => {
         return InvitationService.createInvitation(email, user, user.account.id);
