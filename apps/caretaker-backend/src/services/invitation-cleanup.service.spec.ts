@@ -57,11 +57,8 @@ describe('InvitationCleanupService', () => {
                     .mockResolvedValueOnce({ affected: 1 }) // First call (mark as expired)
                     .mockResolvedValueOnce({ affected: 1 }) // Second call (soft delete)
             };
-            // Run the cleanup
             await InvitationCleanupService.runCleanupNow();
-            console.log('HERE');
 
-            // Verify the calls
             expect(mockRepository.update).toHaveBeenCalledTimes(2);
             expect(mockRepository.update).toHaveBeenNthCalledWith(1,
                 {
@@ -81,11 +78,9 @@ describe('InvitationCleanupService', () => {
         });
 
         it('should handle errors during cleanup', async () => {
-            // Setup mock to reject
             const error = new Error('Database error');
             mockRepository.update.mockRejectedValueOnce(error);
 
-            // Verify that the error is thrown
             await expect(InvitationCleanupService.runCleanupNow()).rejects.toThrow(error);
         });
     });
