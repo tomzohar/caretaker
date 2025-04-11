@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AccountApiService } from '../services/account-api.service';
 import { Account } from '@caretaker/caretaker-types';
+
 export interface AccountSearchResult {
   accounts: Account[] | null;
 }
