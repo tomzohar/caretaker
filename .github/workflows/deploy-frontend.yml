@@ -1,0 +1,73 @@
+name: Deploy Frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_build:
+        description: 'Skip the build step'
+        type: boolean
+        default: false
+      skip_invalidation:
+        description: 'Skip CloudFront invalidation'
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      skip_build:
+        description: 'Skip the build step'
+        type: boolean
+        default: false
+      skip_invalidation:
+        description: 'Skip CloudFront invalidation'
+        type: boolean
+        default: false
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_CARETAKER_CLIENT_BUCKET_NAME:
+        required: true
+      AWS_CLOUDFRONT_DISTRIBUTION_ID:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: Deploy Frontend
+        run: |
+          DEPLOY_CMD="bash scripts/deploy-frontend.sh"
+          
+          if [ "${{ inputs.skip_build }}" == "true" ]; then
+            DEPLOY_CMD="$DEPLOY_CMD --deploy-only"
+          fi
+          
+          if [ "${{ inputs.skip_invalidation }}" == "true" ]; then
+            DEPLOY_CMD="$DEPLOY_CMD --skip-invalidation"
+          fi
+          
+          $DEPLOY_CMD
+        env:
+          AWS_CARETAKER_CLIENT_BUCKET_NAME: ${{ secrets.AWS_CARETAKER_CLIENT_BUCKET_NAME }}
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} 
