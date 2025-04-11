@@ -100,25 +100,8 @@ jobs:
     name: Deploy Frontend
     needs: [check-affected]
     if: needs.check-affected.outputs.deploy_frontend == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - name: Configure AWS
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - run: npm ci --legacy-peer-deps
-      - name: Deploy Frontend
-        run: bash scripts/deploy-frontend.sh
-        env:
-          AWS_CARETAKER_CLIENT_BUCKET_NAME: ${{ secrets.AWS_CARETAKER_CLIENT_BUCKET_NAME }}
-          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+    uses: ./.github/workflows/deploy-frontend.yml
+    secrets: inherit
 
   deploy-backend:
     name: Deploy Backend
