@@ -127,9 +127,17 @@ export class AccountsController {
         relations: { users: true },
       });
     } catch (err) {
+      // Explicitly re-throw user-related errors first
+      if (
+        err instanceof UserNotFoundError ||
+        err instanceof UserAlreadyAssignedToAccountError
+      ) {
+        throw err;
+      }
+      // Then check for other BaseErrors
       throw err instanceof BaseError
         ? err
-        : new AccountCreationFailedError(err);
+        : new AccountCreationFailedError(err); // Wrap other unexpected errors
     }
   }
 }
