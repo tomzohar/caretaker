@@ -94,6 +94,7 @@ export const AccountNameInput = ({
         {accounts?.map((account) => {
           return (
             <Button
+              key={account.id}
               variant="contained"
               color="secondary"
               onClick={() => handleJoinAccount(account)}
