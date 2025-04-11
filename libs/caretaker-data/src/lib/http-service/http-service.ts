@@ -12,7 +12,7 @@ export class HttpService {
     });
   }
 
-  public static post<R, T extends NonNullable<FetchBody>>(url: string, body: T): Promise<R> {
+  public static post<R, T extends FetchBody = object>(url: string, body: T): Promise<R> {
     return fetchWrapper({
       url, method: 'POST', body
     });

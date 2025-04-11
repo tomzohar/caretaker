@@ -12,15 +12,20 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock useCreateAccount
 const mockCreateAccount = jest.fn();
 let mockError: Error | null = null;
+const mockCheckAccountExists = jest.fn();
+
 jest.mock('@caretaker/caretaker-data', () => ({
   ...jest.requireActual('@caretaker/caretaker-data'),
   useCreateAccount: () => ({
     createAccount: mockCreateAccount,
     loading: false,
     error: mockError,
+  }),
+  useCheckAccountExists: () => ({
+    checkAccountExists: mockCheckAccountExists,
+    loading: false,
   }),
   AppStore: jest.fn().mockImplementation(() => ({
     setAlert: jest.fn(),
@@ -34,6 +39,7 @@ describe('AccountDetails', () => {
     appState = new AppStore();
     mockNavigate.mockClear();
     mockCreateAccount.mockClear();
+    mockCheckAccountExists.mockClear();
     mockError = null;
   });
 
@@ -55,15 +61,15 @@ describe('AccountDetails', () => {
     expect(screen.getByLabelText('Account name *')).toBeInTheDocument();
   });
 
-  it('should display the create account button', () => {
+  it('should display the check account name button', () => {
     renderComponent();
-    expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Check Account Name/i })).toBeInTheDocument();
   });
 
   it('should validate account name length', async () => {
     renderComponent();
     const accountNameInput = screen.getByLabelText('Account name *');
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', { name: /Check Account Name/i });
 
     // Test too short
     fireEvent.change(accountNameInput, { target: { value: 'ab' } });
@@ -80,37 +86,19 @@ describe('AccountDetails', () => {
     });
   });
 
-  it('should handle successful account creation', async () => {
-    const mockAccount = { id: '1', name: 'Test Account' };
-    mockCreateAccount.mockResolvedValueOnce(mockAccount);
+  it('should check if account exists when button is clicked', async () => {
+    // Mock successful check
+    mockCheckAccountExists.mockResolvedValueOnce({ accounts: [] });
     
     renderComponent();
     const accountNameInput = screen.getByLabelText('Account name *');
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', { name: /Check Account Name/i });
 
     fireEvent.change(accountNameInput, { target: { value: 'Test Account' } });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockCreateAccount).toHaveBeenCalledWith({ name: 'Test Account' });
-      expect(mockNavigate).toHaveBeenCalledWith('/');
-    });
-  });
-
-  it('should handle failed account creation', async () => {
-    mockCreateAccount.mockResolvedValueOnce(null);
-    const setAlertSpy = jest.spyOn(appState, 'setAlert');
-
-    renderComponent();
-    const accountNameInput = screen.getByLabelText('Account name *');
-    const submitButton = screen.getByRole('button', { name: /create account/i });
-
-    fireEvent.change(accountNameInput, { target: { value: 'Test Account' } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(mockCreateAccount).toHaveBeenCalledWith({ name: 'Test Account' });
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(mockCheckAccountExists).toHaveBeenCalledWith('Test Account');
     });
   });
 

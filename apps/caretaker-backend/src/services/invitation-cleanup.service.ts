@@ -70,7 +70,6 @@ export class InvitationCleanupService {
 
   // For manual cleanup or testing
   public static async runCleanupNow(): Promise<void> {
-    console.log('HERE');
     return await InvitationCleanupService.cleanupExpiredInvitations();
   }
 }
