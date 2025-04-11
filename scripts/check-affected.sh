@@ -21,30 +21,30 @@ fi
 
 echo "Checking affected apps between $BASE and $HEAD..."
 
-# Run nx affected:apps to get the list of affected apps
-AFFECTED_APPS=$(npx nx affected:apps --base="$BASE" --head="$HEAD" 2>/dev/null || echo "")
+# Use nx print-affected with the --with-deps flag to include projects affected via their dependencies
+AFFECTED_OUTPUT=$(npx nx print-affected --base="$BASE" --head="$HEAD" --type=app --with-deps --select=projects --json 2>/dev/null || echo "{}")
 
-# If the affected apps command failed, default to deploying both
-if [ -z "$AFFECTED_APPS" ]; then
+# If the command failed or returned empty result, default to deploying both
+if [ "$AFFECTED_OUTPUT" = "{}" ]; then
   echo "Could not determine affected apps, defaulting to deploying both"
   DEPLOY_FRONTEND=true
   DEPLOY_BACKEND=true
 else
-  # Check if the frontend app is affected
-  if echo "$AFFECTED_APPS" | grep -q "caretaker-client"; then
-    echo "Frontend app is affected, triggering frontend deployment"
+  # Parse the JSON output to check if frontend app is affected
+  if echo "$AFFECTED_OUTPUT" | grep -q "\"caretaker-client\""; then
+    echo "Frontend app or its dependencies are affected, triggering frontend deployment"
     DEPLOY_FRONTEND=true
   else
-    echo "Frontend app is not affected, skipping frontend deployment"
+    echo "Frontend app and its dependencies are not affected, skipping frontend deployment"
     DEPLOY_FRONTEND=false
   fi
 
-  # Check if the backend app is affected
-  if echo "$AFFECTED_APPS" | grep -q "caretaker-backend"; then
-    echo "Backend app is affected, triggering backend deployment"
+  # Parse the JSON output to check if backend app is affected
+  if echo "$AFFECTED_OUTPUT" | grep -q "\"caretaker-backend\""; then
+    echo "Backend app or its dependencies are affected, triggering backend deployment"
     DEPLOY_BACKEND=true
   else
-    echo "Backend app is not affected, skipping backend deployment"
+    echo "Backend app and its dependencies are not affected, skipping backend deployment"
     DEPLOY_BACKEND=false
   fi
 fi
