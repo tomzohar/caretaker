@@ -69,7 +69,6 @@ export const AccountDetails = observer(
           <AccountNameInput
             onAccountNameChange={setAccountName}
             onExistingAccountSelect={handleJoinAccount}
-            onContinueWithNewAccount={handleContinueWithNewAccount}
           />
         </Box>
       </PageLayout>

@@ -79,14 +79,14 @@ export class AccountsController {
 
   public static async findAccountByName(
     name: string
-  ): Promise<AccountRecord | null> {
+  ): Promise<AccountRecord[] | null> {
     try {
       const accounts = getAccountRepo();
-      const account = await accounts.findOne({
+      const foundAccounts = await accounts.find({
         where: { name },
-        relations: { users: true },
+        relations: { users: false },
       });
-      return account;
+      return foundAccounts;
     } catch (err) {
       console.error('Error finding account by name:', err);
       return null;

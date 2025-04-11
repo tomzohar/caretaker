@@ -2,15 +2,15 @@ import {
   AccountSearchResult,
   useCheckAccountExists,
 } from '@caretaker/caretaker-data';
-import { Form, FormItemType } from '@caretaker/caretaker-types';
-import { Box, Button, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { Account, Form, FormItemType } from '@caretaker/caretaker-types';
+import { Button } from '@caretaker/caretaker-ui';
+import { Box } from '@mui/material';
+import { useMemo, useState } from 'react';
 import FormLayout from '../../shared-ui/form-layout/form-layout';
 
 export interface AccountNameInputProps {
   onAccountNameChange: (name: string) => void;
   onExistingAccountSelect: (accountId: number) => void;
-  onContinueWithNewAccount: () => void;
 }
 
 type AccountNameFormValue = {
@@ -20,29 +20,24 @@ type AccountNameFormValue = {
 export const AccountNameInput = ({
   onAccountNameChange,
   onExistingAccountSelect,
-  onContinueWithNewAccount,
 }: AccountNameInputProps) => {
   const [accountName, setAccountName] = useState('');
   const { checkAccountExists, loading } = useCheckAccountExists();
-  const [account, setAccount] = useState<AccountSearchResult['account'] | null>(
-    null
-  );
-
-  useEffect(() => {
-    setAccount(null);
-  }, [accountName]);
+  const [accounts, setAccounts] = useState<
+    AccountSearchResult['accounts'] | null
+  >(null);
 
   const handleCheck = async (formValue: AccountNameFormValue) => {
     try {
       const searchResult = await checkAccountExists(formValue.accountName);
       onAccountNameChange(formValue.accountName);
-      setAccount(searchResult.account);
+      setAccounts(searchResult.accounts);
     } catch (error) {
       console.error('Error checking account existence:', error);
     }
   };
 
-  const handleJoinAccount = () => {
+  const handleJoinAccount = (account: Account) => {
     if (account?.id) {
       onExistingAccountSelect(account.id);
     }
@@ -75,43 +70,46 @@ export const AccountNameInput = ({
         },
       ],
       onSubmit: handleCheck,
-      buttonsConfig: account
-        ? []
-        : [
-            {
-              text: loading ? 'Checking...' : 'Check Account Name',
-              type: 'submit',
-              size: 'large',
-              variant: 'contained',
-              sx: { mt: 2 },
-              fullWidth: true,
-              disabled: loading,
-            },
-          ],
+      buttonsConfig: [
+        {
+          text: loading ? 'Checking...' : accounts ? 'Create Account' : 'Check Account Name',
+          type: 'submit',
+          size: 'large',
+          variant: 'contained',
+          sx: { mt: 2 },
+          fullWidth: true,
+          disabled: loading,
+        },
+      ],
     };
-  }, [account, accountName, loading]);
+  }, [accounts, accountName, loading]);
+
+  const renderForm = () => {
+    return <FormLayout {...accountNameForm} />;
+  };
+
+  const renderJoinAccountButton = () => {
+    return (
+      <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {accounts?.map((account) => {
+          return (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleJoinAccount(account)}
+            >
+              Join {account.slug} Account
+            </Button>
+          );
+        })}
+      </Box>
+    );
+  };
 
   return (
     <Box>
-      <FormLayout {...accountNameForm} />
-
-      {account && (
-        <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 1 }}>
-          <Typography variant="h6">Join {account.name}?</Typography>
-          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleJoinAccount}
-            >
-              Join Existing Account
-            </Button>
-            <Button variant="outlined" onClick={onContinueWithNewAccount}>
-              Create New Account Instead
-            </Button>
-          </Box>
-        </Box>
-      )}
+      {renderForm()}
+      {renderJoinAccountButton()}
     </Box>
   );
 };

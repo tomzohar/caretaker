@@ -2,12 +2,7 @@ import { Account } from '@caretaker/caretaker-types';
 import { HttpService } from '../http-service/http-service';
 
 interface AccountSearchResponse {
-  account: {
-    id: number;
-    name: string;
-    slug: string;
-    usersCount: number;
-  } | null;
+  accounts: Account[] | null;
 }
 
 export class AccountApiService {

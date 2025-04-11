@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import { AccountApiService } from '../services/account-api.service';
-
+import { Account } from '@caretaker/caretaker-types';
 export interface AccountSearchResult {
-  account: {
-    id: number;
-    name: string;
-    slug: string;
-    usersCount: number;
-  } | null;
+  accounts: Account[] | null;
 }
 
 export function useCheckAccountExists() {
