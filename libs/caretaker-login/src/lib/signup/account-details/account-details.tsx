@@ -44,7 +44,7 @@ export const AccountDetails = observer(
       });
     }
 
-    const handleCreateAccount = async () => {
+    const handleCreateAccount = async (accountName: string) => {
       const account = await createAccount({ name: accountName });
       if (account) {
         navigate('/');
@@ -58,9 +58,9 @@ export const AccountDetails = observer(
       }
     };
 
-    const handleContinueWithNewAccount = () => {
-      // User chose to create a new account despite one existing with the same name
-      handleCreateAccount();
+    const handleContinueWithNewAccount = (accountName: string) => {
+      console.log('handleContinueWithNewAccount', accountName);
+      handleCreateAccount(accountName);
     };
 
     return (
@@ -69,6 +69,7 @@ export const AccountDetails = observer(
           <AccountNameInput
             onAccountNameChange={setAccountName}
             onExistingAccountSelect={handleJoinAccount}
+            createAccount={handleContinueWithNewAccount}
           />
         </Box>
       </PageLayout>

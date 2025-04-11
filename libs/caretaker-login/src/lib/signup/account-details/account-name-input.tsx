@@ -4,13 +4,14 @@ import {
 } from '@caretaker/caretaker-data';
 import { Account, Form, FormItemType } from '@caretaker/caretaker-types';
 import { Button } from '@caretaker/caretaker-ui';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import FormLayout from '../../shared-ui/form-layout/form-layout';
 
 export interface AccountNameInputProps {
   onAccountNameChange: (name: string) => void;
   onExistingAccountSelect: (accountId: number) => void;
+  createAccount: (name: string) => void;
 }
 
 type AccountNameFormValue = {
@@ -20,6 +21,7 @@ type AccountNameFormValue = {
 export const AccountNameInput = ({
   onAccountNameChange,
   onExistingAccountSelect,
+  createAccount,
 }: AccountNameInputProps) => {
   const [accountName, setAccountName] = useState('');
   const { checkAccountExists, loading } = useCheckAccountExists();
@@ -28,12 +30,20 @@ export const AccountNameInput = ({
   >(null);
 
   const handleCheck = async (formValue: AccountNameFormValue) => {
-    try {
-      const searchResult = await checkAccountExists(formValue.accountName);
-      onAccountNameChange(formValue.accountName);
-      setAccounts(searchResult.accounts);
-    } catch (error) {
-      console.error('Error checking account existence:', error);
+    const { accountName } = formValue;
+    if (accounts?.length && accountName === accounts[0].name) {
+      createAccount(accountName);
+    } else {
+      try {
+        const searchResult = await checkAccountExists(accountName);
+        onAccountNameChange(accountName);
+        setAccounts(searchResult.accounts);
+        if (!searchResult.accounts?.length) {
+          createAccount(accountName);
+        }
+      } catch (error) {
+        console.error('Error checking account existence:', error);
+      }
     }
   };
 
@@ -72,7 +82,11 @@ export const AccountNameInput = ({
       onSubmit: handleCheck,
       buttonsConfig: [
         {
-          text: loading ? 'Checking...' : accounts ? 'Create Account' : 'Check Account Name',
+          text: loading
+            ? 'Checking...'
+            : accounts
+            ? 'Create Account'
+            : 'Check Account Name',
           type: 'submit',
           size: 'large',
           variant: 'contained',
@@ -89,8 +103,12 @@ export const AccountNameInput = ({
   };
 
   const renderJoinAccountButton = () => {
+    if (!accounts?.length) {
+      return null;
+    }
     return (
       <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Typography variant="h5">Join an existing account</Typography>
         {accounts?.map((account) => {
           return (
             <Button
