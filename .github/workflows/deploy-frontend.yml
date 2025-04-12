@@ -69,5 +69,6 @@ jobs:
           
           $DEPLOY_CMD
         env:
+          NODE_ENV: production
           AWS_CARETAKER_CLIENT_BUCKET_NAME: ${{ secrets.AWS_CARETAKER_CLIENT_BUCKET_NAME }}
-          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} 
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
