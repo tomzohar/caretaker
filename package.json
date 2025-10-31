@@ -41,7 +41,7 @@
     "react-router-dom": "^7.1.5",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.26"
   },
   "devDependencies": {
     "@babel/core": "^7.14.5",
